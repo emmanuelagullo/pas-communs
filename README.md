@@ -3,9 +3,11 @@
 Le socle technique de **Petits Pas** et de **Pas à Pas — Accompagnement**.
 
 #SOC2 introduit le paquet Python `pas-communs` / module `pas_communs`, version
-`0.1.0`. Premier composant : moteur de paquets ZIP réunissant SQLite, clé et
+`0.1.0`. #SOC3 le complète avec la version `0.2.0` : exécution locale et
+assemblage PyInstaller communs. Premier composant : moteur de paquets ZIP réunissant SQLite, clé et
 médias. Python pur, bibliothèque standard uniquement, sans Django ni modèle métier.
 
+- [Exécution et assemblage locaux](LOCAL.md)
 - [Contrat du moteur et compatibilité](PAQUETS.md)
 - [Publication et adoption](PUBLICATION.md)
 - [Frontières métier](CONTRATS.md)
@@ -31,7 +33,7 @@ lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
 ```sh
 python -m pip install -r requirements-construction.txt
 python scripts/construire-wheel.py
-python -m pip install --no-deps dist/pas_communs-0.1.0-py3-none-any.whl
+python -m pip install --no-deps dist/pas_communs-0.2.0-py3-none-any.whl
 python -m unittest discover -s tests
 python -m pip check
 ```

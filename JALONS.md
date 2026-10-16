@@ -42,3 +42,6 @@ miroir : <https://github.com/emmanuelagullo/pas-communs>.
 
 #SOC2 fournit le moteur, les tests et la publication du wheel ; voir PUBLICATION.md
 pour l’ordre d’adoption dans les deux applications. Aucun modèle Django déplacé.
+
+#SOC3 extrait le runtime local et l’assembleur PyInstaller ; voir LOCAL.md.
+Les installateurs historiques Petits Pas restent propres au produit.

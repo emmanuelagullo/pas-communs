@@ -1,9 +1,9 @@
 # Publication du wheel et adoption
 
-## Premier passage #SOC2
+## Adoption courante (#SOC3)
 
-1. Appliquer le patch Pas communs et pousser son `main` sur les deux forges.
-2. Attendre les contrôles, puis poser le tag `0.1.0` sur le commit validé et
+1. Appliquer les patches #SOC2 puis #SOC3 de Pas communs et pousser son `main` sur les deux forges.
+2. Attendre les contrôles, puis poser le tag `0.2.0` sur le commit validé et
    pousser ce même tag sur les deux forges.
 3. Le workflow GitHub teste, construit et publie un wheel et `SHA256SUMS` dans
    une release GitHub. GitLab reste la source de référence et vérifie le code.
@@ -43,3 +43,10 @@ Mettre ensuite à jour l'URL et l'empreinte dans chaque application concernée,
 puis exécuter sa propre CI. Une modification purement métier ne republie pas le
 socle. Pas de suivi automatique de `main`, de `latest`, ni de branche Git mobile.
 PyPI reste facultatif ; aucun registre privé, sous-module ou service n'est ajouté.
+
+
+Si #SOC2 n'a pas encore été adopté, il n'est pas nécessaire de publier un
+wheel 0.1.0 intermédiaire pour utiliser directement 0.2.0 : appliquer les deux
+étapes dans chaque dépôt, publier d'abord le wheel 0.2.0, puis pousser les
+applications avec leur dépendance finale. Les patches #SOC3 sont incrémentaux.
+Conserver Petits Pas 0.10 sur son commit antérieur à #SOC2.
