@@ -47,5 +47,7 @@ pour l’ordre d’adoption dans les deux applications. Aucun modèle Django dé
 Les installateurs historiques Petits Pas restent propres au produit.
 
 #SOC4a livre les primitives et leur première adoption ; voir AUTHENTIFICATION.md.
-#SOC4b doit intégrer le parcours renforcé CHRS et sa récupération avant de
-considérer #SOC4 terminé. Aucun modèle TOTP commun anticipé.
+#SOC4b intègre le parcours renforcé CHRS, les secours, la récupération, les
+limites et la révocation. Les modèles CHRS restent dans son dépôt et aucun
+modèle TOTP commun n’est créé. Le parcours du prototype est testé ; ce jalon
+ne qualifie pas le déploiement réseau de production, qui reste #SOC6.

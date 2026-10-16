@@ -1,4 +1,4 @@
-# Authentification — première extraction #SOC4a
+# Authentification — #SOC4a et #SOC4b
 
 Pas communs 0.3.0 fournit des mécanismes ; chaque produit garde ses comptes,
 modèles, migrations, relations et décisions d’accès. Aucun SSO, compte commun,
@@ -59,19 +59,27 @@ politique existante : cette extraction n’y active pas le 2FA.
 
 Pas à Pas — Accompagnement utilise le plafond et la fermeture ciblée des sessions.
 Ses noms de cookies sont propres au produit dans les profils source et bureau.
-La commande technique n’ajoute aucune permission métier. Le CHRS n’a pas encore
-d’inscription TOTP, d’obligation 2FA ou de récupération de compte accessible.
-Aucun modèle TOTP commun ou CHRS n’est créé pour anticiper ces parcours.
+La commande technique n’ajoute aucune permission métier. #SOC4b ajoute au CHRS
+son inscription TOTP, la connexion en deux étapes, les secours et la récupération.
+Ses modèles et sa politique d’espace fictif restent dans son dépôt ; aucun
+modèle TOTP commun ou rôle social n’est ajouté dans le socle.
 
-## Suite #SOC4b
+## Parcours CHRS (#SOC4b)
 
-Avant de considérer #SOC4 terminé : intégrer dans le CHRS le parcours de connexion
-renforcé, l’inscription et la récupération, avec limitation des tentatives et
-journalisation ; qualifier les durées, cookies et déploiements. Déterminer qui
-peut exiger/réinitialiser le second facteur et quelles sessions doivent être
-révoquées, sans inventer des fonctions sociales à partir des rangs scolaires.
-Le prototype CHRS reste réservé aux données fictives. Ces décisions et tests
-ne sont pas remplacés par la seule présence des primitives dans le wheel.
+Le CHRS utilise le même wheel 0.3.0, sans modification des primitives. Ses UPDATE
+conditionnels consomment les codes une seule fois sur SQLite. Une révision lie
+les attentes et sessions à la configuration courante. Les compteurs de tentatives
+sont partagés en base entre processus. Le déployeur choisit désactivé, optionnel
+ou obligatoire pour l’espace fictif entier ; aucun rang scolaire n’est transposé.
+La récupération via secours ou terminal ferme les sessions et ne change pas les
+droits. Le programme autonome ne propose pas d’activation TOTP et ne contourne
+pas un facteur déjà inscrit. Voir AUTHENTIFICATION.md dans le dépôt CHRS pour
+les procédures, les clés séparées, les logs et les limites du profil d’essai.
+
+Le parcours du prototype est implémenté et testé ; #SOC4 ne constitue pas une
+qualification de production CHRS. Les profils réseau/HTTPS et l’exploitation
+restent #SOC6, les périmètres et habilitations sociales restent métier.
+Aucune nouvelle version du wheel n’est nécessaire pour cette étape applicative.
 
 ## Vérifier
 
