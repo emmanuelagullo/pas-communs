@@ -15,9 +15,9 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
     for paquet in paquets_ressources:
         donnees += collect_data_files(paquet, includes=["templates/**", "static/**"])
     imports = list(imports)
-    outils = {"pas_communs.construction", "pas_communs.construire_bureau"}
+    outils = {"pas_communs.construction", "pas_communs.construire_bureau", "pas_communs.construction_pwa", "pas_communs.navigateur"}
     def module_runtime(nom_module):
-        return nom_module not in outils and not any(
+        return not any(nom_module == outil or nom_module.startswith(outil + ".") for outil in outils) and not any(
             p == "tests" or p.startswith(("test_", "tests_")) for p in nom_module.split("."))
     for paquet in ("pas_communs", *paquets):
         imports += collect_submodules(paquet, filter=module_runtime)

@@ -18,3 +18,8 @@ test:
   artifacts:
     paths: [dist/]
     expire_in: 30 days
+
+contrat-navigateur:
+  image: node:24-slim
+  script:
+    - node --test tests/test_navigateur.mjs

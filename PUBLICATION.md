@@ -50,3 +50,14 @@ wheel 0.1.0 ou 0.2.0 intermédiaire pour utiliser directement 0.3.0 : appliquer 
 étapes dans chaque dépôt, publier d'abord le wheel 0.3.0, puis pousser les
 applications avec leur dépendance finale. Les patches #SOC3 et #SOC4a sont incrémentaux.
 Conserver Petits Pas 0.10 sur son commit antérieur à #SOC2.
+
+
+## Candidat 0.4.0 (#SOC5a)
+
+Appliquer les patches jusqu'à #SOC5a puis publier le wheel 0.4.0 validé avant
+les applications qui l'épinglent. Si aucune version du socle n'est encore
+publiée, il suffit de publier cette version finale ; les versions intermédiaires
+ne sont pas nécessaires aux installations neuves. Les patches restent
+incrémentaux, avec #SOC4b uniquement dans le socle et le CHRS.
+Petits Pas 0.10 reste sur son commit antérieur à #SOC2.
+Une CI de socle verte ne publie pas les PWA des produits.

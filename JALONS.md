@@ -51,3 +51,9 @@ Les installateurs historiques Petits Pas restent propres au produit.
 limites et la révocation. Les modèles CHRS restent dans son dépôt et aucun
 modèle TOTP commun n’est créé. Le parcours du prototype est testé ; ce jalon
 ne qualifie pas le déploiement réseau de production, qui reste #SOC6.
+
+#SOC5a livre les primitives navigateur du wheel 0.4.0 et un premier parcours
+CHRS fictif hors connexion. Les coques et Workers restent dans les produits.
+Voir PWA.md. #SOC5b reste à faire : copies/restauration CHRS, qualification
+complète des mises à jour et reprises, puis décision sur la suite de l'extraction.
+#SOC5 n'est donc pas clos par #SOC5a.

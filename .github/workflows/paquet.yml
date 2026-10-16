@@ -48,9 +48,20 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  navigateur:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: node --test tests/test_navigateur.mjs
+
   publier:
     if: github.ref_type == 'tag'
-    needs: verifier
+    needs: [verifier, navigateur]
     runs-on: ubuntu-24.04
     permissions:
       contents: write

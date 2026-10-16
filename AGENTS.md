@@ -15,3 +15,8 @@ les noms historiques Petits Pas. Fermer les requêtes avant restauration.
 #SOC4a : les primitives TOTP ne consomment rien. Conserver les transactions,
 limites de tentatives et politiques dans les produits. Exécuter aussi les tests
 crypto et l’application Django neutre avec requirements-tests-auth.txt.
+
+#SOC5a : lire PWA.md. Préserver les noms et anciens états OPFS Petits Pas.
+Tester les ressources du wheel installé et `node --test tests/test_navigateur.mjs`.
+La fabrique suppose un propriétaire unique ; ne pas enlever les Web Locks.
+Ne pas qualifier la production ou terminer #SOC5 sur la seule base des tests Node.

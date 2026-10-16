@@ -35,7 +35,7 @@ lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
 ```sh
 python -m pip install -r requirements-construction.txt
 python scripts/construire-wheel.py
-python -m pip install --no-deps dist/pas_communs-0.2.0-py3-none-any.whl
+python -m pip install --no-deps dist/pas_communs-0.4.0-py3-none-any.whl
 python -m unittest discover -s tests
 python -m pip check
 ```
@@ -59,3 +59,10 @@ de Petits Pas ; les principes d'autorisation et le métier restent dans les appl
 La version 0.3.0 ajoute les primitives de mot de passe, TOTP et session.
 Voir [AUTHENTIFICATION.md](AUTHENTIFICATION.md) pour leur contrat et les limites.
 Aucun modèle utilisateur déplacé ; #SOC4 n’est pas terminé par cette extraction.
+
+## Première extraction PWA (#SOC5a)
+
+La version 0.4.0 ajoute les primitives navigateur et les ressources JavaScript
+embarquées dans le wheel. Voir [PWA.md](PWA.md) pour le contrat, les frontières
+et les étapes restantes. Node 24 sert aux tests JavaScript, pas à l'exécution
+Django ou au programme de bureau. Le prototype CHRS reste fictif.

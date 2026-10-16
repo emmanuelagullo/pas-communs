@@ -1,0 +1,68 @@
+# Navigateur — #SOC5a
+
+La version 0.4.0 contient une première extraction, employée par les deux
+produits. Ce jalon ne termine pas #SOC5 et ne publie aucune nouvelle PWA.
+
+## Composants communs
+
+- `navigateur/stockage.mjs` : fabrique de stockage OPFS immuable, pointeur
+  IndexedDB transactionnel, état précédent et état de secours ; mêmes plafonds
+  historiques (base/fichier 64 Mio, ensemble 256 Mio, 5 000 entrées).
+- `transport.mjs` : échanges MessageChannel et délais des opérations longues.
+- `capacites.mjs` : vérification d'une écriture OPFS depuis un Worker.
+- `navigateur.crypto` : adaptations PBKDF2/scrypt de Python vers PyCryptodome
+  dans WASM, sans changement des mots de passe ni des paramètres de hachage.
+- `navigateur.http` : environnement WSGI et cookies virtuels ; les vues Django
+  gardent CSRF, connexion et permissions. Aucun partage de session entre produits.
+- `construction_pwa` : téléchargement avec reprise, vérification du runtime
+  épinglé et nettoyage de son cache. Aucun téléchargement lors de l'import.
+
+`copier_ressources(destination)` copie les trois modules JavaScript du wheel
+installé dans le bundle statique. Leur empreinte entre dans le manifeste de
+chaque produit. Aucun paquet npm commun ni CDN supplémentaire à l'utilisation.
+Le runtime Pyodide et ses dépendances restent épinglés par les produits.
+Le bureau exclut ces outils de construction et ressources navigateur inutilisés.
+
+## Contrat de stockage
+
+La fabrique exige un identifiant d'application, une base, un nom IndexedDB,
+un répertoire OPFS et un chemin de publication. Chaque instance a son état
+propre. Essai et aperçu sont des suffixes explicites du profil Petits Pas.
+Les manifestes écrits portent l'identité du produit ; un manifeste étranger
+est refusé. Seul le profil Petits Pas accepte ses anciens ZIP et manifestes
+sans identité. Les noms de ses bases et répertoires historiques sont conservés.
+Le format public des sauvegardes n'est pas modifié par ces manifestes internes.
+
+Un propriétaire unique, protégé par Web Lock dans la coque du produit, sérialise
+les requêtes. Le stockage ne fournit pas lui-même ce verrou. Écrire puis vider
+les nouveaux blobs, écrire le manifeste, activer le pointeur transactionnel,
+puis seulement répondre à la saisie. Aucun blob confirmé n'est écrasé.
+Une interruption avant activation garde l'état antérieur ; après activation,
+le nouvel état est confirmé. Un défaut de nettoyage après commit ne l'annule pas.
+Une corruption est un refus d'ouverture, jamais un espace vide de remplacement.
+
+Changer d'origine ou de chemin crée un autre espace : ce n'est pas une migration.
+Les noms et scopes évitent les collisions accidentelles ; ils ne constituent
+pas une barrière de sécurité entre applications d'une même origine. Aucun
+chiffrement du stockage navigateur ni synchronisation n'est ajouté.
+
+## Frontière conservée dans les produits
+
+Coque, Service Worker, contrôle des mises à jour, Worker WSGI, installation,
+modèles, migrations, inventaire des fichiers et parcours de sauvegarde restent
+propres à chaque application dans cette première tranche. Petits Pas conserve
+ses transferts OPFS, WORKERFS, aperçus et confirmations métier. Le prototype
+CHRS n'embarque ni modèles scolaires ni écrans d'export d'école.
+
+Le CHRS ne propose pas encore de copie ZIP ni de restauration dans son interface
+navigateur. Il demeure un essai sur des données fictives sans valeur à conserver.
+Le stockage local peut être effacé par le navigateur. #SOC5b devra qualifier
+le cycle mise à jour/reprise et les copies CHRS avant de clore #SOC5.
+
+## Vérifier
+
+Construire et installer le wheel puis lancer les tests Python habituels.
+Les ressources copiées doivent provenir de ce wheel. Le contrat JavaScript se
+teste avec Node 24 : `node --test tests/test_navigateur.mjs`. Ce banc modélise
+les transactions et les interruptions ; il ne remplace pas les essais OPFS
+réels dans les bancs Chromium de chaque produit, ni les appareils terrain.
