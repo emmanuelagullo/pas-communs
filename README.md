@@ -1,40 +1,51 @@
-# Pas communs — #SOC1
+# Pas communs
 
-**Pas communs**, le socle technique de Petits Pas et de Pas à Pas — Accompagnement.
+Le socle technique de **Petits Pas** et de **Pas à Pas — Accompagnement**.
 
-Projet de composants communs à **Petits Pas** et **Pas à Pas — Accompagnement**.
-Ce dépôt ouvre le chantier ; il ne fournit encore aucune bibliothèque à installer.
-Les deux applications restent indépendantes. La première extraction est #SOC2.
+#SOC2 introduit le paquet Python `pas-communs` / module `pas_communs`, version
+`0.1.0`. Premier composant : moteur de paquets ZIP réunissant SQLite, clé et
+médias. Python pur, bibliothèque standard uniquement, sans Django ni modèle métier.
 
-Le cadrage est fondé sur Petits Pas `main`, commit
-`7b259d4ca20d20bd25cc05190cbcbd536370c1a8` (miroir GitHub).
-Aucun changement de Petits Pas n'est nécessaire pour #SOC1.
+- [Contrat du moteur et compatibilité](PAQUETS.md)
+- [Publication et adoption](PUBLICATION.md)
+- [Frontières métier](CONTRATS.md)
+- [Jalons](JALONS.md)
 
-- [Contrats et limites](CONTRATS.md)
-- [Jalons et mode de contribution](JALONS.md)
-- [Consignes des agents](AGENTS.md)
+## Développer sans publier
 
-## Pourquoi pas de bibliothèque vide ?
+Depuis le dépôt de l'une des applications, avec son environnement Python activé :
 
-Le premier consommateur CHRS démarre avec Django et ses propres migrations.
-Il permet de confronter les extractions à un second usage réel. Nous ne créons
-ni moteur de plugins, ni modèles universels, ni copie de Petits Pas.
-Le futur module Python portera le nom `pas_communs`.
-Une bibliothèque versionnée apparaîtra avec le premier composant effectivement
-extrait, ses tests et son adoption par les deux applications.
-
-## Organisation
-
-Trois dépôts voisins sont pratiques en développement :
-
-```text
-petits-pas/
-pas-communs/
-pas-a-pas-accompagnement/
+```sh
+python -m pip install -e ../pas-communs --no-build-isolation
 ```
 
-Ce ne sont pas des sous-modules. Les emplacements ci-dessus sont une convention
-de travail, pas des dépendances d'exécution. Les publications épingleront une
-version précise du futur paquet commun ; pas de dépendance à une branche mobile.
+Le backend de construction indiqué dans `pyproject.toml` doit être installé ;
+au besoin installer au préalable `../pas-communs/requirements-construction.txt`.
+Ne pas utiliser une installation éditable pour une distribution publiée.
 
-Code et documentation de ce nouveau dépôt : AGPL-3.0-or-later, voir LICENSE.
+## Construire et vérifier
+
+Python 3.12 ou plus récent pour les outils (module `tomllib`) ; le moteur
+lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
+
+```sh
+python -m pip install -r requirements-construction.txt
+python scripts/construire-wheel.py
+python -m pip install --no-deps dist/pas_communs-0.1.0-py3-none-any.whl
+python -m unittest discover -s tests
+python -m pip check
+```
+
+Le script construit deux fois avec le même environnement et refuse une
+différence d'octets. Les horodatages ZIP sont fixés ; `dist/SHA256SUMS` contient
+l'empreinte du wheel. Aucune publication PyPI n'est nécessaire.
+Les tests s'exécutent depuis le wheel installé, sans importer le dossier `src`.
+GitLab vérifie Linux/Python 3.12, 3.13 et 3.14 ; GitHub ajoute Windows/Python 3.12.
+Les plateformes applicatives restent qualifiées dans chaque produit.
+
+Aucun service supplémentaire : le paquet est installé avec les dépendances des
+applications, inclus par PyInstaller et livré dans les wheels du bundle PWA.
+Il n'exige aucun réseau à l'utilisation sur les appareils autonomes.
+
+Code et documentation : AGPL-3.0-or-later, voir LICENSE. Le moteur est extrait
+de Petits Pas ; les principes d'autorisation et le métier restent dans les applications.

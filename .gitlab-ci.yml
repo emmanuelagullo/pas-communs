@@ -1,0 +1,18 @@
+image: python:3.12-slim
+
+stages: [test]
+
+test:
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.12", "3.13", "3.14"]
+  image: python:${PYTHON_VERSION}-slim
+  script:
+    - python -m pip install -r requirements-construction.txt
+    - python scripts/construire-wheel.py
+    - python -m pip install --no-deps dist/*.whl
+    - python -m unittest discover -s tests
+    - python -m pip check
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
