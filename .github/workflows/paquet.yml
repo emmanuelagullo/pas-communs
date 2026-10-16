@@ -36,7 +36,9 @@ jobs:
           python -m pip install -r requirements-construction.txt
           python scripts/construire-wheel.py
           python -m pip install --no-deps dist/*.whl
+          python -m pip install -r requirements-tests-auth.txt
           python -m unittest discover -s tests
+          python tests/verifier_authentification_django.py
           python -m pip check
       - uses: actions/upload-artifact@v6
         if: matrix.os == 'ubuntu-24.04' && matrix.python == '3.12'

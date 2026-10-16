@@ -5,7 +5,9 @@ Le socle technique de **Petits Pas** et de **Pas à Pas — Accompagnement**.
 #SOC2 introduit le paquet Python `pas-communs` / module `pas_communs`, version
 `0.1.0`. #SOC3 le complète avec la version `0.2.0` : exécution locale et
 assemblage PyInstaller communs. Premier composant : moteur de paquets ZIP réunissant SQLite, clé et
-médias. Python pur, bibliothèque standard uniquement, sans Django ni modèle métier.
+médias. Ce moteur reste en Python pur et bibliothèque standard uniquement,
+sans Django ni modèle métier. Les modules d’authentification #SOC4a emploient
+Django et les dépendances crypto seulement dans les profils qui les utilisent.
 
 - [Exécution et assemblage locaux](LOCAL.md)
 - [Contrat du moteur et compatibilité](PAQUETS.md)
@@ -51,3 +53,9 @@ Il n'exige aucun réseau à l'utilisation sur les appareils autonomes.
 
 Code et documentation : AGPL-3.0-or-later, voir LICENSE. Le moteur est extrait
 de Petits Pas ; les principes d'autorisation et le métier restent dans les applications.
+
+## Première extraction d’authentification (#SOC4a)
+
+La version 0.3.0 ajoute les primitives de mot de passe, TOTP et session.
+Voir [AUTHENTIFICATION.md](AUTHENTIFICATION.md) pour leur contrat et les limites.
+Aucun modèle utilisateur déplacé ; #SOC4 n’est pas terminé par cette extraction.
