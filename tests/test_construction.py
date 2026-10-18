@@ -10,7 +10,9 @@ from pas_communs import construction
 class ConstructionTests(unittest.TestCase):
     def test_windows_sans_pdf_ne_demande_pas_pango_et_collecte_ressources(self):
         with tempfile.TemporaryDirectory() as t:
-            racine = Path(t)
+            # Windows peut fournir TEMP via son alias court (RUNNER~1).
+            # L'assembleur transmet volontairement les chemins résolus.
+            racine = Path(t).resolve()
             (racine / "scripts").mkdir()
             (racine / "scripts/lancer-local.py").write_text("# lanceur fictif")
             hooks = ModuleType("PyInstaller.utils.hooks")
