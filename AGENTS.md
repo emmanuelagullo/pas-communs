@@ -28,3 +28,8 @@ empreintes dans les deux produits, sans modifier de version déjà publiée.
 #SOC6a : lire SERVEUR.md. Le contrat HTTPS ne lit aucun environnement et
 n'importe aucun modèle. Ne pas activer un proxy par défaut ni masquer les
 recommandations check --deploy pour rendre un banc vert.
+
+#SOC6b : lire CI-PUBLICATION.md. Ne pas ajouter d'installation pip implicite à
+la recette, ni déplacer les assertions métier. Préserver le format de manifeste
+Petits Pas, les décisions de promotion et le refus des bundles test/non marqués.
+Le banc Gunicorn est loopback Unix, sans suivi de redirection publique.

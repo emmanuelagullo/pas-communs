@@ -64,5 +64,11 @@ applications ; #SOC6 pourra ensuite traiter les recettes serveur/CI/publication.
 
 #SOC6a ajoute les profils serveur volontaires et le contrat HTTPS 0.5.0,
 avec bancs WSGI fictifs dans les deux produits. Les profils historiques restent
-inchangés. #SOC6b reste à traiter : recettes CI/publication et qualification
-réseau/base ; aucun déploiement ni dossier CHRS réel validé sous #SOC6a.
+inchangés. #SOC6b complète les recettes et bancs réseau ci-dessous ; aucun
+déploiement ni dossier CHRS réel validé sous #SOC6a.
+
+#SOC6b clôt #SOC6 : même recette Django dans les deux forges, primitives de
+candidats adoptées par les deux produits et vrais échanges HTTP sur Gunicorn
+local. La publication reste explicite par produit, avec 0.5.0 épinglée.
+Les services PostgreSQL existants restent dans la CI Petits Pas ; leur résultat
+distant et la chaîne TLS réelle restent à confirmer chez l'exploitant.

@@ -42,6 +42,7 @@ implicite pour rendre ce contrôle vert. Le déployeur les examine selon son dom
 Le banc WSGI vérifie le contrat applicatif ; il ne qualifie pas un certificat
 public, une chaîne de reverse-proxys ni un hébergement donné.
 
-#SOC6a ne clôt pas #SOC6. #SOC6b traitera les recettes CI et publication
-réutilisables, ainsi que les exercices réseau/base de données nécessaires.
+#SOC6b complète ce contrat avec les recettes et candidats partagés, ainsi
+qu'un banc HTTP Gunicorn local. Lire CI-PUBLICATION.md pour la clôture et
+ses limites (TLS réel et résultats distants à confirmer).
 Le CHRS reste réservé aux données fictives et à un espace unique.

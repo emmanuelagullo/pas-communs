@@ -1,9 +1,9 @@
 # Publication du wheel et adoption
 
-## Adoption courante (#SOC4a)
+## Adoption courante (#SOC6)
 
-1. Appliquer les patches #SOC2, #SOC3 puis #SOC4a de Pas communs et pousser son `main` sur les deux forges.
-2. Attendre les contrôles, puis poser le tag `0.3.0` sur le commit validé et
+1. Appliquer les patches jusqu’à #SOC6b de Pas communs et pousser son `main` sur les deux forges.
+2. Attendre les contrôles, puis poser le tag `0.5.0` sur le commit validé et
    pousser ce même tag sur les deux forges.
 3. Le workflow GitHub teste, construit et publie un wheel et `SHA256SUMS` dans
    une release GitHub. GitLab reste la source de référence et vérifie le code.
@@ -73,3 +73,12 @@ uniquement le candidat dont la publication a été différée.
 La version 0.4.0 reste immuable. Publier 0.5.0 après la CI du socle, puis pousser
 les applications qui l'épinglent. Le profil serveur est volontaire : cette
 publication ne bascule aucune instance et ne publie aucun produit.
+
+## Finalisation #SOC6b
+
+0.5.0 était le candidat non publié de #SOC6a. Appliquer aussi #SOC6b, reconstruire
+ou employer son wheel final et sa nouvelle empreinte, puis publier le premier
+tag 0.5.0 après CI verte. Les deux consommateurs épinglent les mêmes octets.
+Ne pas publier l'ancien candidat #SOC6a ni remplacer 0.4.0.
+Les outils partagés décrivent/vérifient des octets ; ils ne donnent pas une
+permission de publier les applications. Lire CI-PUBLICATION.md.

@@ -77,5 +77,10 @@ les nouvelles empreintes ; reconstruire/publier les octets finaux.
 La version 0.5.0 ajoute `pas_communs.serveur.configuration_https`, sans import
 Django ni dépendance supplémentaire. Les deux produits l'adoptent dans des
 profils volontaires distincts des réglages historiques, locaux et navigateur.
-Lire SERVEUR.md. #SOC6b restera à traiter pour les recettes CI/publication.
+Lire SERVEUR.md et CI-PUBLICATION.md pour le complément #SOC6b.
 La version 0.4.0 publiée reste immuable.
+
+#SOC6b finalise 0.5.0 : recette Django commune aux forges, primitives d'identité
+et d'intégrité des candidats, et banc HTTP Gunicorn local. Lire CI-PUBLICATION.md.
+Aucun workflow distant mobile ou registre supplémentaire n'est requis. Les
+décisions de déploiement/publication restent dans chaque produit.
