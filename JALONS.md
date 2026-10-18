@@ -72,3 +72,9 @@ candidats adoptées par les deux produits et vrais échanges HTTP sur Gunicorn
 local. La publication reste explicite par produit, avec 0.5.0 épinglée.
 Les services PostgreSQL existants restent dans la CI Petits Pas ; leur résultat
 distant et la chaîne TLS réelle restent à confirmer chez l'exploitant.
+
+#SOC7a inventorie les extensions dans [EXTENSIONS.md](EXTENSIONS.md). Aucun
+second usage CHRS d'images, documents ou traitements n'est encore implémenté :
+aucune extraction ni nouvelle version du wheel n'est imposée. Développer les
+parcours CHRS, puis ouvrir SOC7b seulement sur un besoin commun constaté.
+SOC7 reste conditionnel ; ce cadrage ne qualifie pas la production CHRS.
