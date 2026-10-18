@@ -130,7 +130,7 @@ async function clean(dir, references) {
     if (!keep.has(name)) await dir.removeEntry(name).catch(() => {});
   }
 }
-async function save(inventory, read, version, failpoint = '', preserve = false, force = false, staged = null) {
+async function save(inventory, read, version, failpoint = '', preserve = false, force = false, staged = null, reutiliser = true) {
   // L'inventaire compte aussi le manifeste ZIP public pour sa réimportation.
   const {files, bytes} = inventory;
   if (!files || Array.isArray(files) || !files[profil.base] || !files['secret-key']
@@ -144,7 +144,7 @@ async function save(inventory, read, version, failpoint = '', preserve = false, 
     throw new Error('Fichier supérieur à 64 Mio.');
   const current = await state();
   const dir = await directory();
-  const tree = await manifest(dir, current);
+  const tree = reutiliser ? await manifest(dir, current) : null;
   const unchanged = tree && Object.keys(tree.files).length === Object.keys(files).length
     && Object.entries(files).every(([name, file]) => tree.files[name]?.hash === file.hash && tree.files[name]?.size === file.size);
   if (unchanged && current.version === version && !preserve && !force && !failpoint)
@@ -202,5 +202,10 @@ async function clearStagedMedia() {
   await clean(await directory(), [current, current?.previous, current?.recovery]);
 }
 
-return {configurerEspace, load, save, confirmedMedia, openStagedMedia, clearStagedMedia};
+async function informations() {
+  const current = await state();
+  return {present: Boolean(current), version: current?.version || null,
+    secours: Boolean(current?.recovery)};
+}
+return {configurerEspace, load, save, confirmedMedia, openStagedMedia, clearStagedMedia, informations};
 }

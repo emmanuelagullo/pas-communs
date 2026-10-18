@@ -54,10 +54,28 @@ propres à chaque application dans cette première tranche. Petits Pas conserve
 ses transferts OPFS, WORKERFS, aperçus et confirmations métier. Le prototype
 CHRS n'embarque ni modèles scolaires ni écrans d'export d'école.
 
-Le CHRS ne propose pas encore de copie ZIP ni de restauration dans son interface
-navigateur. Il demeure un essai sur des données fictives sans valeur à conserver.
-Le stockage local peut être effacé par le navigateur. #SOC5b devra qualifier
-le cycle mise à jour/reprise et les copies CHRS avant de clore #SOC5.
+## Clôture du moteur (#SOC5b)
+
+Le CHRS ajoute les copies ZIP au format du moteur commun, vérifiées dans un
+Worker neuf avant confirmation. L'activation conserve l'état précédent. La
+fabrique expose `informations()` (présence, version, secours disponible), sans
+modifier les anciens appels ni les noms et formats Petits Pas. Un export de
+secours lit les fichiers confirmés sans migrer ni ouvrir une session Django.
+Une corruption n'est jamais remplacée silencieusement par une base vide.
+Une restauration confirmée passe `reutiliser=false` au dernier argument de
+`save` : aucun blob ni manifeste actuel potentiellement altéré n'est réutilisé,
+même si le pointeur annonce la même empreinte. Les appels historiques gardent
+le réemploi des blobs pour les médias volumineux. Un secours déjà endommagé
+reste refusé, sans prétendre pouvoir réparer ses octets.
+
+Les essais des deux produits qualifient le moteur PWA sur Chromium/Linux :
+installation, anciennes données, mise à jour explicite, interruption et reprise.
+Les coques/Workers restent volontairement propres aux produits : la petite
+application CHRS n'a pas les transferts ni médias scolaires. #SOC5 est clos dans
+ce périmètre technique ; cela n'autorise pas des dossiers CHRS réels et ne vaut
+pas qualification Safari/iOS, Firefox, Windows ou appareils terrain.
+Le stockage local peut être effacé par le navigateur ; garder des ZIP privés
+hors appareil. Pas de chiffrement ni synchronisation ajouté.
 
 ## Vérifier
 

@@ -66,3 +66,8 @@ La version 0.4.0 ajoute les primitives navigateur et les ressources JavaScript
 embarquées dans le wheel. Voir [PWA.md](PWA.md) pour le contrat, les frontières
 et les étapes restantes. Node 24 sert aux tests JavaScript, pas à l'exécution
 Django ou au programme de bureau. Le prototype CHRS reste fictif.
+
+#SOC5b termine le candidat 0.4.0 avant sa première publication : copies et reprise
+CHRS qualifiées, sans factorisation forcée des coques. Lire PWA.md et les
+qualifications des produits. Ne pas employer le wheel candidat de #SOC5a avec
+les nouvelles empreintes ; reconstruire/publier les octets finaux.

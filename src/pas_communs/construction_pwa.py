@@ -58,5 +58,3 @@ def nettoyer_runtime(runtime, fichiers):
     for fichier in runtime.iterdir():
         if fichier.is_file() and fichier.name not in fichiers:
             fichier.unlink()
-
-

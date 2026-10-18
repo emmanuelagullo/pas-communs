@@ -20,3 +20,7 @@ crypto et l’application Django neutre avec requirements-tests-auth.txt.
 Tester les ressources du wheel installé et `node --test tests/test_navigateur.mjs`.
 La fabrique suppose un propriétaire unique ; ne pas enlever les Web Locks.
 Ne pas qualifier la production ou terminer #SOC5 sur la seule base des tests Node.
+
+#SOC5b : tester aussi informations() et le secours après remplacement. Le wheel
+0.4.0 de #SOC5a était un candidat non publié ; adopter les octets finaux et leurs
+empreintes dans les deux produits, sans modifier de version déjà publiée.

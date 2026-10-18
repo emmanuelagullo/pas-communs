@@ -61,3 +61,9 @@ ne sont pas nécessaires aux installations neuves. Les patches restent
 incrémentaux, avec #SOC4b uniquement dans le socle et le CHRS.
 Petits Pas 0.10 reste sur son commit antérieur à #SOC2.
 Une CI de socle verte ne publie pas les PWA des produits.
+
+#SOC5b finalise le candidat 0.4.0 non publié. Appliquer aussi #SOC5b avant de
+créer son premier tag 0.4.0. Le wheel de #SOC5a est remplacé par celui de #SOC5b,
+avec une nouvelle empreinte explicite dans les deux consommateurs. Ne jamais
+remplacer les octets d'une release déjà publiée : cette procédure concerne
+uniquement le candidat dont la publication a été différée.

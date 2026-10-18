@@ -75,3 +75,20 @@ test('inventaires incomplets ou incohérents refusés avant écriture',async()=>
  await assert.rejects(s.save({files:{...inventory.files,'media/../autre':inventory.files['secret-key']},bytes:1000},read,'v'),/Inventaire/);
  assert.equal(await s.load('v'),null);
 });
+test('état de secours annoncé uniquement après remplacement explicite',async()=>{
+ const s=creerStockage(chrs,'/informations/');assert.deepEqual(await s.informations(),{present:false,version:null,secours:false});
+ await s.save(...await valeurs(chrs,'initial'),'v1');assert.equal((await s.informations()).secours,false);
+ await s.save(...await valeurs(chrs,'remplacement'),'v1','',true);
+ assert.equal((await s.informations()).secours,true);assert.equal(await lire(s,chrs,true),'initial');
+});
+
+test('restauration explicite réécrit les blobs même si les empreintes du pointeur sont identiques',async()=>{
+ const s=creerStockage(chrs,'/reparer/');const args=await valeurs(chrs,'intact');await s.save(...args,'v1');
+ const etat=await s.load('v1');const entree=etat.files[chrs.base];
+ const dir=[...dossiers.entries()].find(([n])=>n.includes('reparer'))[1];dir.set(entree.file,new Uint8Array([0]));
+ await assert.rejects(etat.read(entree));
+ await s.save(...args,'v1','',true,false,null,false);assert.equal(await lire(s,chrs),'intact');
+ const db=bases.get([...bases.keys()].find(n=>n.includes('reparer')));const actif=db.get('active');dir.set(actif.file,new Uint8Array([0]));
+ await assert.rejects(s.load('v1'));
+ await s.save(...args,'v1','',true,false,null,false);assert.equal(await lire(s,chrs),'intact');
+});

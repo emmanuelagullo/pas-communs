@@ -54,6 +54,10 @@ ne qualifie pas le déploiement réseau de production, qui reste #SOC6.
 
 #SOC5a livre les primitives navigateur du wheel 0.4.0 et un premier parcours
 CHRS fictif hors connexion. Les coques et Workers restent dans les produits.
-Voir PWA.md. #SOC5b reste à faire : copies/restauration CHRS, qualification
-complète des mises à jour et reprises, puis décision sur la suite de l'extraction.
-#SOC5 n'est donc pas clos par #SOC5a.
+Voir PWA.md. #SOC5a ne clôt pas le moteur ; #SOC5b le complète ci-dessous.
+
+#SOC5b clôt #SOC5 sur le périmètre Chromium/Linux automatisé : copies/restauration
+CHRS, reprise et mise à jour ; les adaptateurs des produits restent distincts.
+Les appareils terrain et autres navigateurs restent à qualifier. Aucun usage
+CHRS réel n'est validé. La publication finale du candidat 0.4.0 précède les deux
+applications ; #SOC6 pourra ensuite traiter les recettes serveur/CI/publication.
