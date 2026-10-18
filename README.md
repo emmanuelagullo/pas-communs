@@ -35,7 +35,7 @@ lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
 ```sh
 python -m pip install -r requirements-construction.txt
 python scripts/construire-wheel.py
-python -m pip install --no-deps dist/pas_communs-0.4.0-py3-none-any.whl
+python -m pip install --no-deps dist/pas_communs-0.5.0-py3-none-any.whl
 python -m unittest discover -s tests
 python -m pip check
 ```
@@ -71,3 +71,11 @@ Django ou au programme de bureau. Le prototype CHRS reste fictif.
 CHRS qualifiées, sans factorisation forcée des coques. Lire PWA.md et les
 qualifications des produits. Ne pas employer le wheel candidat de #SOC5a avec
 les nouvelles empreintes ; reconstruire/publier les octets finaux.
+
+## Profils serveur explicites (#SOC6a)
+
+La version 0.5.0 ajoute `pas_communs.serveur.configuration_https`, sans import
+Django ni dépendance supplémentaire. Les deux produits l'adoptent dans des
+profils volontaires distincts des réglages historiques, locaux et navigateur.
+Lire SERVEUR.md. #SOC6b restera à traiter pour les recettes CI/publication.
+La version 0.4.0 publiée reste immuable.

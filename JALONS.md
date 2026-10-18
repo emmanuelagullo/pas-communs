@@ -61,3 +61,8 @@ CHRS, reprise et mise à jour ; les adaptateurs des produits restent distincts.
 Les appareils terrain et autres navigateurs restent à qualifier. Aucun usage
 CHRS réel n'est validé. La publication finale du candidat 0.4.0 précède les deux
 applications ; #SOC6 pourra ensuite traiter les recettes serveur/CI/publication.
+
+#SOC6a ajoute les profils serveur volontaires et le contrat HTTPS 0.5.0,
+avec bancs WSGI fictifs dans les deux produits. Les profils historiques restent
+inchangés. #SOC6b reste à traiter : recettes CI/publication et qualification
+réseau/base ; aucun déploiement ni dossier CHRS réel validé sous #SOC6a.

@@ -67,3 +67,9 @@ créer son premier tag 0.4.0. Le wheel de #SOC5a est remplacé par celui de #SOC
 avec une nouvelle empreinte explicite dans les deux consommateurs. Ne jamais
 remplacer les octets d'une release déjà publiée : cette procédure concerne
 uniquement le candidat dont la publication a été différée.
+
+## #SOC6a — version 0.5.0
+
+La version 0.4.0 reste immuable. Publier 0.5.0 après la CI du socle, puis pousser
+les applications qui l'épinglent. Le profil serveur est volontaire : cette
+publication ne bascule aucune instance et ne publie aucun produit.

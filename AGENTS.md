@@ -24,3 +24,7 @@ Ne pas qualifier la production ou terminer #SOC5 sur la seule base des tests Nod
 #SOC5b : tester aussi informations() et le secours après remplacement. Le wheel
 0.4.0 de #SOC5a était un candidat non publié ; adopter les octets finaux et leurs
 empreintes dans les deux produits, sans modifier de version déjà publiée.
+
+#SOC6a : lire SERVEUR.md. Le contrat HTTPS ne lit aucun environnement et
+n'importe aucun modèle. Ne pas activer un proxy par défaut ni masquer les
+recommandations check --deploy pour rendre un banc vert.
