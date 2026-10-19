@@ -1,13 +1,92 @@
 # Consignes
 
+## Écosystème, dépôts et responsabilités
+
+Ces dépôts forment un même écosystème, avec trois responsabilités distinctes :
+
+| Dépôt | Responsabilité | Référence Inria | Miroir GitHub |
+| --- | --- | --- | --- |
+| `pas-communs` | Socle et architecture techniques communs | <https://gitlab.inria.fr/pas-communs/pas-communs> | <https://github.com/emmanuelagullo/pas-communs> |
+| `petits-pas` | Application métier : carnets de suivi en maternelle | <https://gitlab.inria.fr/petits-pas/petits-pas> | <https://github.com/emmanuelagullo/petits-pas> |
+| `pas-a-pas-accompagnement` | Application métier : accueil et accompagnement social, notamment CHRS | <https://gitlab.inria.fr/pas-a-pas-accompagnement/pas-a-pas-accompagnement> | <https://github.com/emmanuelagullo/pas-a-pas-accompagnement> |
+
+Inria est la référence du code ; GitHub est le miroir utilisé notamment pour
+les constructions Windows/Linux et la publication des wheels et programmes.
+Examiner le main public récent avant de préparer un patch. Les miroirs d'un
+même dépôt doivent recevoir les mêmes commits et tags ; les versions des trois
+dépôts restent indépendantes.
+
+Les deux applications importent `pas_communs`, jamais le code de l'autre
+application. Le socle est une bibliothèque embarquée, pas un service central.
+Les mécanismes techniques partagés y résident : paquets et sauvegardes,
+primitives d'authentification, exécution et construction locales, installateur
+Windows, ressources navigateur, contrats serveur, recettes CI, intégrité des
+publications et moteurs PDF. Se fier aux API réellement présentes et à leurs
+contrats, sans supposer que toute l'infrastructure est déjà extraite.
+Les modèles et migrations métier, rôles, permissions, parcours et contenus
+restent propres aux applications. Comptes, bases, médias, secrets et espaces
+navigateur sont séparés ; une primitive commune ne crée ni SSO ni équivalence
+entre une école et un CHRS.
+
+Les sites Hugo restent dans `site/` de chaque application. Les quatre dépôts
+auxiliaires de publication ont les références Inria suivantes :
+
+| Produit | Racine du domaine : redirection | Application navigateur : inclusion CI |
+| --- | --- | --- |
+| Petits Pas | <https://gitlab.inria.fr/petits-pas/petits-pas.gitlabpages.inria.fr> | <https://gitlab.inria.fr/petits-pas/petits-pas-pwa> |
+| Pas à Pas | <https://gitlab.inria.fr/pas-a-pas-accompagnement/pas-a-pas-accompagnement.gitlabpages.inria.fr> | <https://gitlab.inria.fr/pas-a-pas-accompagnement/pas-a-pas-accompagnement-pwa> |
+
+Ces auxiliaires ne contiennent ni second exemplaire de l'application, ni
+bibliothèque métier, ni fork du socle. Aucun miroir GitHub de ces auxiliaires
+n'est déclaré ici : ne pas en inventer un. Le préparateur PWA, les constructeurs,
+les manifestes et les sources des sites se modifient dans le dépôt applicatif.
+
+## Coévolution et séparation des préoccupations
+
+- Pour une évolution strictement métier, intervenir dans l'application concernée.
+  Dès qu'une évolution dépasse cette couche, examiner aussi le socle, l'autre
+  application et les dépôts de publication affectés. Lire leurs AGENTS.md et
+  contrats ; expliciter les impacts et les adaptations nécessaires.
+- Factoriser ce qui est factorisable et harmoniser ce qui est harmonisable.
+  Rechercher un mécanisme existant avant d'en recopier un. Extraire les mécanismes
+  techniques communs dans pas-communs avec des paramètres ou façades propres aux
+  produits ; harmoniser les conventions et recettes qui peuvent rester dans
+  leurs dépôts. Justifier l'abstraction par les usages des deux applications,
+  sans imposer un modèle métier commun ni une abstraction spéculative.
+- Préparer ensemble les changements du socle et les adaptations des consommateurs.
+  Vérifier les deux usages touchés, leurs compatibilités et leurs profils
+  serveur/bureau/PWA pertinents. La CI du socle ne qualifie pas à elle seule
+  les applications ; préserver sauvegardes historiques, données et identités.
+- La version réellement adoptée est fixée par requirements-communs.txt (URL du
+  wheel et SHA-256). Les mentions de versions dans les anciens jalons décrivent
+  leur historique. Pour du code ou des ressources du socle, publier une nouvelle
+  version immuable avant de pousser les consommateurs qui la requièrent. Une
+  modification de documentation seule ne nécessite pas de nouveau wheel.
+- Livrer les patches par dépôt avec l'ordre d'application, de publication et de
+  vérification. Maintenir cette carte et les AGENTS.md affectés cohérents. Annoncer
+  à l'avance tout changement de profils d'installation ou de commandes de
+  déploiement pour permettre la préparation des instances existantes.
+- Dans les deux applications, les tags numériques qualifiés déclenchent les
+  releases GitHub et les publications PWA, à partir des artefacts validés sans
+  reconstruction ; la reprise manuelle reste disponible. Sur main, la publication
+  PWA reste manuelle. Les déploiements serveur gardent leur procédure séparée
+  et ne sont pas modifiés implicitement
+  par une extraction du socle ou une publication de programme/PWA.
+
+## Travail et vérifications dans ce dépôt
+
 Lire README.md, CONTRATS.md, PAQUETS.md, LOCAL.md, AUTHENTIFICATION.md, PUBLICATION.md et JALONS.md.
-Ne jamais importer les modèles métier dans le futur socle. Préserver les données,
+Ne jamais importer les modèles métier dans le socle. Préserver les données,
 formats et migrations historiques de Petits Pas. Exemples fictifs uniquement.
-Construire le wheel, installer ce wheel et exécuter les tests ; vérifier aussi
-`git diff --check`. Préserver les phases progressives et les ZIP historiques.
+Pour un changement de code ou de ressources, construire le wheel, l’installer
+et exécuter les tests pertinents ; vérifier aussi `git diff --check`. Pour une
+modification documentaire seule, contrôler les liens et la cohérence des
+consignes. Préserver les phases progressives et les ZIP historiques.
 Ne pas mettre à jour une version publiée en place. Livrer en patch git am, avec des sujets français et le repère du jalon.
 Utiliser l’identité de commit explicitement indiquée ; si elle n’est pas
 précisée, la demander avant de créer les commits.
+
+## Contrats techniques hérités des jalons
 
 #SOC3 : garder les imports Django/WebView/PyInstaller paresseux et préserver
 les noms historiques Petits Pas. Fermer les requêtes avant restauration.
