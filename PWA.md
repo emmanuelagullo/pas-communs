@@ -1,7 +1,8 @@
-# Navigateur — #SOC5a
+# Navigateur — contrat actuel
 
-La version 0.4.0 contient une première extraction, employée par les deux
-produits. Ce jalon ne termine pas #SOC5 et ne publie aucune nouvelle PWA.
+Les primitives navigateur ont été introduites avec 0.4.0 et complétées sous
+SOC5b. Elles sont employées par les deux produits avec leur version épinglée.
+Les jalons décrivent cette histoire ; les API et limites ci-dessous sont actuelles.
 
 ## Composants communs
 

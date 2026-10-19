@@ -4,7 +4,7 @@
 
 L'inventaire ci-dessous est historique (SOC6b). Depuis SOC7b, le CHRS dispose
 d'une fiche PDF : les appels natifs sont partagés dans pas_communs.pdf et le
-backend texte PWA reste facultatif. Le socle prépare 0.8.0 ; son adoption réelle
+backend texte PWA reste facultatif. Le socle 0.8.0 est publié ; son adoption réelle
 reste fixée par les requirements des consommateurs. Cet ajout ne justifie
 aucune GED, politique d'image ou infrastructure de tâches commune.
 

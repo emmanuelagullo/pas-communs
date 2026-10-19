@@ -1,6 +1,6 @@
-# Exécution et assemblage locaux — #SOC3
+# Exécution et assemblage locaux — contrat actuel
 
-Pas communs 0.2.0 fournit les mécanismes communs aux programmes Petits Pas et
+Les mécanismes introduits avec Pas communs 0.2.0 sont communs aux programmes Petits Pas et
 Pas à Pas — Accompagnement. Le format ZIP #SOC2 et son API ne changent pas.
 
 ## Runtime

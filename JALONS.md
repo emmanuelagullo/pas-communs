@@ -89,7 +89,7 @@ communs aux deux produits. Conserver les identités historiques de Petits Pas ;
 Pas à Pas dispose d’un setup propre et du ZIP portable. Voir LOCAL.md.
 
 
-#AUD1–#AUD3 : candidat 0.8.0. Chemins ZIP portables dans les deux sens,
+#AUD1–#AUD3 : 0.8.0 était candidate à la livraison ; elle est désormais publiée. Chemins ZIP portables dans les deux sens,
 qualification conjointe avec provenance des octets, description cohérente du
 runtime et validateurs de promotion sans accès réseau. Les politiques et
 profils d'exploitation restent dans les produits ; voir QUALIFICATION.md.

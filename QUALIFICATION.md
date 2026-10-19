@@ -9,7 +9,11 @@ Un environnement contenant Gunicorn/Pango permet ensuite les bancs serveur.
 
 ## Candidat reproductible et provenance
 
-Depuis pas-communs, construire avec le backend épinglé dans pyproject.toml :
+Pour un futur changement du code/ressources, construire avec le backend épinglé
+dans pyproject.toml, après avoir choisi une nouvelle version. Pour qualifier le
+code actuellement publié en 0.8.0, utiliser son wheel public inchangé : ne pas
+reconstruire main sous le numéro 0.8.0 après une correction documentaire.
+Reproduire ses octets exige le tag exact. La commande de construction est :
 
 ```sh
 python3 scripts/construire-wheel.py
@@ -56,3 +60,14 @@ Publier une nouvelle version immuable du socle seulement après ces contrôles,
 puis vérifier l'empreinte publique avant de pousser les consommateurs. Les
 tags et versions applicatifs restent indépendants. Les déploiements serveur
 conservent leurs procédures : cette adoption n'exige aucun nouveau réglage.
+
+
+## Versions des consommateurs
+
+Cette recette exige le même candidat dans les deux requirements pour une
+**campagne d'adoption coordonnée**. Ce n'est pas une obligation d'aligner les
+versions des produits : un consommateur non concerné garde sa version et se
+qualifie avec ses propres profils et son wheel épinglé. Noter dans le bilan
+quelle combinaison a été testée ; ne pas modifier une dépendance pour satisfaire
+artificiellement la recette. Les tests du socle ci-dessus emploient le wheel
+public si le changement est documentaire seulement.

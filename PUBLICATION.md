@@ -1,16 +1,20 @@
 # Publication du wheel et adoption
 
-## Adoption candidate 0.8.0 (#AUD1–#AUD3)
+## État courant : 0.8.0 publiée
 
-1. Appliquer les patches jusqu’à #AUD3 de Pas communs et pousser son `main` sur les deux forges.
-2. Attendre les contrôles, puis poser le tag `0.8.0` sur le commit validé et
-   pousser ce même tag sur les deux forges.
-3. Le workflow GitHub teste, construit et publie un wheel et `SHA256SUMS` dans
-   une release GitHub. GitLab reste la source de référence et vérifie le code.
-4. Vérifier que la release est publique et que son empreinte correspond à celle
-   épinglée dans les patches des deux applications.
-5. Appliquer ensuite les patches applicatifs. Ne pas les déployer avant cette
-   publication : l'URL de dépendance ne devient disponible qu'à cette étape.
+Le tag 0.8.0 et son wheel sont immuables. Les deux applications l'adoptent au
+20 octobre 2026, avec SHA-256
+`38855af96c89ae059acdc8e99186dc935d42dd7957b6e1cb597bbd1bc4c81a51`.
+Une correction documentaire de main ne doit ni recréer ce tag, ni remplacer
+ses fichiers, ni imposer une nouvelle version aux consommateurs. Le README
+entre dans les métadonnées du wheel : ne pas publier un rebuild de main sous
+le numéro 0.8.0. Reproduire cette release depuis son tag exact seulement.
+
+Pour une future modification de code/ressources : nouvelle version, tests et
+publication immuable, puis adoption explicite par chaque consommateur concerné.
+Ne pas imposer des versions identiques en permanence. Une évolution purement
+métier ou documentaire ne republie pas le socle. Les branches et tags des
+applications sont indépendants de ceux de la bibliothèque.
 
 La CI utilise le jeton GitHub Actions intégré, avec permission `contents: write`
 uniquement dans le job de publication. Aucun secret de déploiement supplémentaire.
@@ -51,6 +55,8 @@ puis exécuter sa propre CI. Une modification purement métier ne republie pas l
 socle. Pas de suivi automatique de `main`, de `latest`, ni de branche Git mobile.
 PyPI reste facultatif ; aucun registre privé, sous-module ou service n'est ajouté.
 
+
+## Historique des adoptions SOC2–SOC6b (ne pas réexécuter pour 0.8.0)
 
 Si #SOC2 n'a pas encore été adopté, il n'est pas nécessaire de publier un
 wheel 0.1.0 ou 0.2.0 intermédiaire pour utiliser directement 0.3.0 : appliquer les trois

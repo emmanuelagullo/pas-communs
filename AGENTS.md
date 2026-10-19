@@ -75,7 +75,9 @@ les manifestes et les sources des sites se modifient dans le dépôt applicatif.
 
 ## Travail et vérifications dans ce dépôt
 
-Lire README.md, CONTRATS.md, PAQUETS.md, LOCAL.md, AUTHENTIFICATION.md, PUBLICATION.md et JALONS.md.
+Lire README.md et CONTRATS.md, puis les contrats du domaine : PAQUETS.md,
+LOCAL.md, AUTHENTIFICATION.md, PWA.md, SERVEUR.md, CI-PUBLICATION.md, PDF.md,
+PUBLICATION.md et QUALIFICATION.md. JALONS.md décrit l'historique, pas l'état courant.
 Ne jamais importer les modèles métier dans le socle. Préserver les données,
 formats et migrations historiques de Petits Pas. Exemples fictifs uniquement.
 Pour un changement de code ou de ressources, construire le wheel, l’installer
@@ -125,7 +127,9 @@ Ne jamais lancer le banc d’installation sur un compte contenant des données.
 
 
 #AUD : lire les contrats actualisés et la recette QUALIFICATION.md de pas-communs.
-Le candidat 0.8.0 doit être publié immuablement avant de pousser ses consommateurs.
+La version 0.8.0 est publiée et adoptée ; préserver son tag et ses octets.
+Une modification documentaire seule ne demande pas de nouveau wheel. Les
+consommateurs peuvent conserver des versions différentes, explicitement épinglées.
 Préserver les noms ZIP historiques portables ; refuser les alias Windows à
 l'export comme à l'import sans renommer les données. Le runtime Pyodide est
 sélectionné explicitement dans les constructeurs ; les politiques de promotion

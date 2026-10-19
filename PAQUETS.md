@@ -1,4 +1,4 @@
-# Paquets ZIP/SQLite — #SOC2
+# Paquets ZIP/SQLite — contrat actuel
 
 ## API
 

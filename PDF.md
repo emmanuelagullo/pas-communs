@@ -1,5 +1,7 @@
-# PDF partagés — #SOC7b, version 0.6.0
+# PDF partagés — contrat actuel
 
+Les moteurs ont été introduits en 0.6.0 sous SOC7b ; leur version adoptée
+reste celle de requirements-communs.txt dans chaque produit.
 Le socle ne connaît ni personne, élève, modèle Django, template ou droit.
 Les imports WeasyPrint, fpdf2 et FontTools sont paresseux ; le wheel n'impose
 aucune dépendance obligatoire supplémentaire.

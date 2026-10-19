@@ -1,6 +1,6 @@
-# Authentification — #SOC4a et #SOC4b
+# Authentification — contrat actuel
 
-Pas communs 0.3.0 fournit des mécanismes ; chaque produit garde ses comptes,
+Introduits avec Pas communs 0.3.0, les mécanismes sont techniques ; chaque produit garde ses comptes,
 modèles, migrations, relations et décisions d’accès. Aucun SSO, compte commun,
 rôle générique ou correspondance école/CHRS n’est introduit.
 

@@ -1,6 +1,6 @@
-# Profils serveur explicites — #SOC6a
+# Profils serveur explicites — contrat actuel
 
-La version 0.5.0 fournit `configuration_https` : validation d'une clé stable,
+Introduite avec la version 0.5.0, l’API `configuration_https` fournit un contrat : validation d'une clé stable,
 d'hôtes exacts et d'origines CSRF HTTPS, puis réglages Django communs. Aucun
 import Django, modèle, fichier de données ou accès réseau dans cette fonction.
 Les deux applications la sélectionnent dans un nouveau module `settings_serveur`.

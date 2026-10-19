@@ -1,4 +1,10 @@
-# CI et candidats — #SOC6b, version 0.5.0
+# Recettes CI et intégrité des publications — contrat actuel
+
+Les mécanismes ont été introduits sous SOC6b puis complétés sous AUD. Leur
+version adoptée reste fixée par chaque consommateur ; les numéros de jalons
+ci-dessous sont historiques. Les contrôles de promotion de 0.8.0 ne choisissent
+ni une destination, ni une politique de préversions PWA.
+
 
 ## Recette partagée dans le wheel
 
