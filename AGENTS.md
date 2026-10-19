@@ -67,7 +67,8 @@ les manifestes et les sources des sites se modifient dans le dépôt applicatif.
   à l'avance tout changement de profils d'installation ou de commandes de
   déploiement pour permettre la préparation des instances existantes.
 - Dans les deux applications, les tags numériques qualifiés déclenchent les
-  releases GitHub et les publications PWA, à partir des artefacts validés sans
+  releases GitHub ; seuls les tags sans suffixe publient automatiquement la PWA,
+  à partir des artefacts validés sans
   reconstruction ; la reprise manuelle reste disponible. Sur main, la publication
   PWA reste manuelle. Les déploiements serveur gardent leur procédure séparée
   et ne sont pas modifiés implicitement
