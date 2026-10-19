@@ -8,9 +8,23 @@ import tempfile
 import time
 import urllib.request
 import urllib.error
+from dataclasses import dataclass
 
-PYODIDE = "314.0.7"
-BASE = f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE}/full/"
+@dataclass(frozen=True)
+class RuntimePyodide:
+    version: str
+    python: str
+    abi: str
+
+    @property
+    def base(self):
+        return f"https://cdn.jsdelivr.net/pyodide/v{self.version}/full/"
+
+
+RUNTIME_314_0_7 = RuntimePyodide('314.0.7', '3.14.2', '2026_0')
+# Compatibilité des constructeurs précédents ; sélection explicite recommandée.
+PYODIDE = RUNTIME_314_0_7.version
+BASE = RUNTIME_314_0_7.base
 
 def telecharger(url, target, empreinte=None, tentatives=4):
     """Cache complet, remplacement atomique et reprises réseau bornées ; TLS vérifié."""
@@ -47,10 +61,12 @@ def telecharger(url, target, empreinte=None, tentatives=4):
                 temporaire.unlink(missing_ok=True)
 
 
-def verifier_runtime(lock, version="314.0.7"):
+def verifier_runtime(lock, version=None, *, runtime=RUNTIME_314_0_7):
+    if version is not None and version != runtime.version:
+        raise ValueError('La version demandée ne correspond pas au contrat du runtime.')
     info = lock.get("info", {})
-    if info.get("abi_version") != "2026_0" or info.get("python") != "3.14.2":
-        raise ValueError(f"Cache runtime incompatible avec Pyodide {version} : utiliser un dossier propre à cette version.")
+    if info.get("abi_version") != runtime.abi or info.get("python") != runtime.python:
+        raise ValueError(f"Cache runtime incompatible avec Pyodide {runtime.version} : utiliser un dossier propre à cette version.")
 
 
 def nettoyer_runtime(runtime, fichiers):

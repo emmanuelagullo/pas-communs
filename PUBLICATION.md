@@ -1,9 +1,9 @@
 # Publication du wheel et adoption
 
-## Adoption courante (#SOC3b)
+## Adoption candidate 0.8.0 (#AUD1–#AUD3)
 
-1. Appliquer les patches jusqu’à #SOC3b de Pas communs et pousser son `main` sur les deux forges.
-2. Attendre les contrôles, puis poser le tag `0.7.0` sur le commit validé et
+1. Appliquer les patches jusqu’à #AUD3 de Pas communs et pousser son `main` sur les deux forges.
+2. Attendre les contrôles, puis poser le tag `0.8.0` sur le commit validé et
    pousser ce même tag sur les deux forges.
 3. Le workflow GitHub teste, construit et publie un wheel et `SHA256SUMS` dans
    une release GitHub. GitLab reste la source de référence et vérifie le code.
@@ -35,6 +35,13 @@ installer le wheel local ou utiliser `pip install -e ../pas-communs`. Ne pas
 committer ce contournement et ne pas publier de distribution avec une source
 locale non identifiée. La livraison inclut un wheel candidat pour ces essais ;
 la CI doit reconstruire le même wheel et retrouver son empreinte.
+
+Avant publication, construire le wheel candidat avec le backend épinglé,
+contrôler sa reproductibilité et exécuter QUALIFICATION.md. Les patches
+consommateurs peuvent être testés localement avec ces octets ; ne les pousser
+qu'après publication du wheel et vérification du SHA-256. Une CI verte ne
+remplace pas les essais Windows et PWA des deux produits. Aucun déploiement
+serveur n'est déclenché par cette procédure.
 
 ## Versions suivantes
 

@@ -1,6 +1,14 @@
 # Extensions justifiées — #SOC7a
 
-## Décision à l'issue de SOC6b
+## Mise à jour après SOC7b et AUD
+
+L'inventaire ci-dessous est historique (SOC6b). Depuis SOC7b, le CHRS dispose
+d'une fiche PDF : les appels natifs sont partagés dans pas_communs.pdf et le
+backend texte PWA reste facultatif. Le socle prépare 0.8.0 ; son adoption réelle
+reste fixée par les requirements des consommateurs. Cet ajout ne justifie
+aucune GED, politique d'image ou infrastructure de tâches commune.
+
+## Décision à l'issue de SOC6b (historique)
 
 Ne pas extraire de composant supplémentaire pour l'instant. Les mécanismes
 nécessaires aux deux produits (paquets, exécution locale, authentification,

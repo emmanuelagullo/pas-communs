@@ -61,3 +61,19 @@ pas aux secrets du serveur. La sélection ou neutralisation des secrets serveur
 reste impérativement effectuée par l'exporteur métier, jamais par ce moteur.
 Les médias doivent rester stables pendant l'export ; le moteur ne coordonne pas
 les transactions SQL et les écritures de fichiers des autres processus.
+
+
+## Portabilité renforcée (0.8.0)
+
+Import et export refusent les chemins non portables : lecteur Windows, flux
+NTFS, composant vide/dot, caractères interdits, nom réservé et suffixe point ou
+espace. Les collisions de casse concernent aussi les répertoires, de même que
+les conflits fichier/répertoire. Aucun renommage automatique : corriger une
+source atypique explicitement après diagnostic. Les noms ordinaires, accents,
+formats ZIP/SQL et archives historiques conformes sont conservés.
+
+Tous les noms d'une archive sont contrôlés avant de créer la préparation. Les
+médias natifs et externes sont contrôlés avant d'ouvrir la destination ZIP ; un
+export refusé pour son nom ne détruit donc pas une destination existante. Le
+moteur n'ajoute pas de politique générale d'écrasement : les produits conservent
+leur réservation exclusive et leurs confirmations.

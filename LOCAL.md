@@ -74,8 +74,9 @@ portable reste disponible en parallèle du setup.
 La compilation et les contrôles Windows des deux produits sont en CI GitHub ;
 ils ne remplacent pas un essai interactif sur Windows 10/11 ou la qualification
 du moteur WebView2. Le setup ne fournit pas WebView2 ni signature numérique.
-Les publications restent manuelles et promeuvent le setup vérifié sans
-reconstruction, avec son empreinte.
+Les publications applicatives suivent les workflows des produits : automatiques
+après une construction de tag qualifiée, avec reprise manuelle. Elles promeuvent
+le setup vérifié sans reconstruction, avec son empreinte.
 
 ## Qualification
 

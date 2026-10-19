@@ -136,7 +136,10 @@ class PaquetsTests(unittest.TestCase):
         self.assertFalse((self.paquet / self.profil.base).exists())
 
     def test_chemins_et_liens_dans_archive_refuses(self):
-        for nom, lien in [("../echappe", False), ("media/lien", True), ("/absolu", False)]:
+        for nom, lien in [("../echappe", False), ("media/lien", True), ("/absolu", False),
+                          ('media/C:/echappe', False), ('media/D:echappe', False),
+                          ('media/photo:flux', False), ('media/CON.txt', False),
+                          ('media/photo.', False), ('media/photo ', False)]:
             source = BytesIO()
             with ZipFile(source, "w") as z:
                 entrees = {"base.sqlite3": b"base", "secret-key": b"cle", nom: b"fictif"}
@@ -151,6 +154,41 @@ class PaquetsTests(unittest.TestCase):
                 preparer_restauration(source, self.parent, profil=self.profil)
             self.assertFalse(list(self.parent.glob(".restauration-*")))
             self.assertFalse((self.parent / "echappe").exists())
+
+    def test_collisions_refusees_avant_creation_de_preparation(self):
+        source = self.archive()
+        cible = BytesIO()
+        with ZipFile(source) as z, ZipFile(cible, 'w') as out:
+            for nom in z.namelist():
+                contenu = z.read(nom)
+                if nom == 'manifest.json':
+                    m = json.loads(contenu)
+                    m['files']['media/PHOTO.bin'] = hashlib.sha256(b'autre').hexdigest()
+                    contenu = json.dumps(m).encode()
+                out.writestr(nom, contenu)
+            out.writestr('media/PHOTO.bin', b'autre')
+        cible.seek(0)
+        with patch('pas_communs.paquets.tempfile.mkdtemp') as creer:
+            with self.assertRaises(ValueError):
+                preparer_restauration(cible, self.parent, profil=self.profil)
+            creer.assert_not_called()
+
+    def test_export_refuse_un_nom_que_import_refuserait(self):
+        for nom in ('media/C:/a', 'media/a:flux', 'media/CON.txt', 'media/photo.bin'):
+            sortie = BytesIO()
+            with self.subTest(nom=nom), self.assertRaises(ValueError):
+                creer_sauvegarde(self.paquet, sortie, profil=self.profil,
+                    fichiers_externes={nom: (1, lambda: BytesIO(b'x'))})
+            self.assertEqual(sortie.getvalue(), b'')
+
+    @unittest.skipIf(__import__('os').name == 'nt', 'Noms non portables impossibles à créer sous Windows')
+    def test_export_natif_refuse_collision_et_conserve_destination(self):
+        (self.paquet/'media/PHOTO.bin').write_bytes(b'autre')
+        destination = self.parent/'sauvegarde.zip'
+        destination.write_bytes(b'ancienne copie')
+        with self.assertRaises(ValueError):
+            creer_sauvegarde(self.paquet, destination, profil=self.profil)
+        self.assertEqual(destination.read_bytes(), b'ancienne copie')
 
     def test_echec_activation_retablit_paquet_source(self):
         preparation = preparer_restauration(self.archive(), self.parent, profil=self.profil)

@@ -10,8 +10,9 @@ import uuid
 from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+from .chemins import composants_portables, verifier_arbre
 
 
 VERSION = 1
@@ -34,6 +35,7 @@ class ProfilPaquet:
         if (not self.base or self.base in {".", "..", "secret-key", "manifest.json", "media"}
                 or "/" in self.base or "\\" in self.base or ":" in self.base):
             raise ValueError("Nom de base invalide.")
+        composants_portables(self.base)
 
 
 @dataclass(frozen=True)
@@ -81,6 +83,11 @@ def creer_sauvegarde(paquet, destination, *, profil, taille_bloc=None,
             if chemin.is_file():
                 fichiers[chemin.relative_to(paquet).as_posix()] = chemin
         empreintes = {}
+        externes = fichiers_externes or {}
+        for nom in externes:
+            if not nom.startswith('media/'):
+                raise ValueError("Chemin de média externe invalide.")
+        verifier_arbre([*fichiers, *externes, 'manifest.json'])
         with ZipFile(destination, "w", compression=ZIP_DEFLATED) as archive:
             for nom, chemin in fichiers.items():
                 with chemin.open("rb") as source:
@@ -170,6 +177,9 @@ def iterer_restauration(source, parent, nom_paquet="paquet-autonome", *,
         if sum(e.file_size for e in entrees) > taille_max:
             raise ValueError("La sauvegarde dépasse la taille autorisée.")
 
+        # Valider tous les noms avant toute extraction, sur Linux comme Windows.
+        verifier_arbre(noms)
+
         etape = Path(tempfile.mkdtemp(prefix=".restauration-", dir=parent))
         try:
             cibles = set()
@@ -177,7 +187,7 @@ def iterer_restauration(source, parent, nom_paquet="paquet-autonome", *,
                 nom = entree.filename
                 if nom == "manifest.json":
                     continue
-                elements = PurePosixPath(nom).parts
+                elements = composants_portables(nom)
                 if (
                     not elements or any(p in {"", ".", ".."} for p in elements)
                     or (nom not in {profil.base, "secret-key"} and elements[0] != "media")
@@ -186,6 +196,8 @@ def iterer_restauration(source, parent, nom_paquet="paquet-autonome", *,
                 ):
                     raise ValueError("Chemin invalide dans la sauvegarde.")
                 cible = etape.joinpath(*elements)
+                if not cible.is_relative_to(etape):
+                    raise ValueError("Chemin hors du dossier de préparation.")
                 if cible in cibles:
                     raise ValueError("Chemin répété dans la sauvegarde.")
                 cibles.add(cible)

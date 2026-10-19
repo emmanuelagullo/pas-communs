@@ -122,3 +122,12 @@ et sa licence. Le rendu texte ne remplace pas les carnets scolaires avec images.
 l’AppId et les chemins Petits Pas ; les données restent hors du programme.
 Tester les ressources installées et les CI Windows des deux consommateurs.
 Ne jamais lancer le banc d’installation sur un compte contenant des données.
+
+
+#AUD : lire les contrats actualisés et la recette QUALIFICATION.md de pas-communs.
+Le candidat 0.8.0 doit être publié immuablement avant de pousser ses consommateurs.
+Préserver les noms ZIP historiques portables ; refuser les alias Windows à
+l'export comme à l'import sans renommer les données. Le runtime Pyodide est
+sélectionné explicitement dans les constructeurs ; les politiques de promotion
+et de déploiement restent applicatives. Qualifier les octets du wheel et les
+deux consommateurs ; aucune installation pip n'est implicite dans cette recette.

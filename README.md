@@ -2,6 +2,19 @@
 
 Le socle technique de **Petits Pas** et de **Pas à Pas — Accompagnement**.
 
+## État courant
+
+Le code prépare **0.8.0**, candidat à publier après qualification ; ne pas
+remplacer le wheel public 0.7.0. Les consommateurs adoptent les octets par URL
+et SHA-256 dans requirements-communs.txt. Les sections #SOC ci-dessous retracent
+les versions d'introduction des composants, pas leur version actuellement adoptée.
+
+0.8.0 ferme les chemins ZIP non portables à l'import **et** à l'export,
+partage les petits validateurs de promotion, et décrit explicitement le runtime
+Pyodide sélectionné par chaque produit. Voir [QUALIFICATION.md](QUALIFICATION.md)
+pour vérifier ensemble les consommateurs, sans installation implicite ni pip
+imposé en développement Guix.
+
 #SOC2 introduit le paquet Python `pas-communs` / module `pas_communs`, version
 `0.1.0`. #SOC3 le complète avec la version `0.2.0` : exécution locale et
 assemblage PyInstaller communs. Premier composant : moteur de paquets ZIP réunissant SQLite, clé et
@@ -17,7 +30,18 @@ Django et les dépendances crypto seulement dans les profils qui les utilisent.
 
 ## Développer sans publier
 
-Depuis le dépôt de l'une des applications, avec son environnement Python activé :
+Sous Guix, conserver les dépendances fournies par l'environnement de
+développement. Depuis l'une des applications (dépôts frères dans cet exemple) :
+
+```sh
+export PYTHONPATH="$(realpath ../pas-communs/src)${PYTHONPATH:+:$PYTHONPATH}"
+python3 -c 'import pas_communs; print(pas_communs.__file__)'
+```
+
+Pour qualifier une distribution, préférer les octets extraits du wheel selon
+QUALIFICATION.md. Une source locale ne remplace pas une adoption épinglée.
+
+Alternative dans un environnement Python hors Guix :
 
 ```sh
 python -m pip install -e ../pas-communs --no-build-isolation
@@ -35,7 +59,7 @@ lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
 ```sh
 python -m pip install -r requirements-construction.txt
 python scripts/construire-wheel.py
-python -m pip install --no-deps dist/pas_communs-0.7.0-py3-none-any.whl
+python -m pip install --no-deps dist/pas_communs-0.8.0-py3-none-any.whl
 python -m unittest discover -s tests
 python -m pip check
 ```

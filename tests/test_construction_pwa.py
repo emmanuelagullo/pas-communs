@@ -14,6 +14,19 @@ class Reponse(io.BytesIO):
 
 
 class ConstructionPwaTests(unittest.TestCase):
+    def test_contrat_runtime_unique_et_selection_explicite(self):
+        runtime = moteur.RUNTIME_314_0_7
+        bon = {'info': {'python': runtime.python, 'abi_version': runtime.abi}}
+        moteur.verifier_runtime(bon, runtime=runtime)
+        moteur.verifier_runtime(bon, runtime.version)
+        with self.assertRaises(ValueError):
+            moteur.verifier_runtime(bon, 'autre-version')
+        autre = moteur.RuntimePyodide('fictif', '9.9', 'fictive')
+        with self.assertRaises(ValueError):
+            moteur.verifier_runtime(bon, runtime=autre)
+        moteur.verifier_runtime({'info': {'python': '9.9', 'abi_version': 'fictive'}}, runtime=autre)
+        self.assertIn('/vfictif/full/', autre.base)
+
     def test_reprise_et_cache_valide_sans_nouveau_reseau(self):
         with tempfile.TemporaryDirectory() as temp:
             cible=Path(temp)/'runtime'

@@ -20,7 +20,10 @@ produits. Ce jalon ne termine pas #SOC5 et ne publie aucune nouvelle PWA.
 `copier_ressources(destination)` copie les trois modules JavaScript du wheel
 installé dans le bundle statique. Leur empreinte entre dans le manifeste de
 chaque produit. Aucun paquet npm commun ni CDN supplémentaire à l'utilisation.
-Le runtime Pyodide et ses dépendances restent épinglés par les produits.
+Chaque produit sélectionne explicitement RUNTIME_314_0_7 : version Pyodide,
+version Python et ABI viennent du même objet immuable. verifier_runtime contrôle
+ces valeurs ; l'ancien argument version n'est accepté que s'il correspond au
+contrat choisi. Aucun changement du runtime distribué n'est introduit en 0.8.0.
 Le bureau exclut ces outils de construction et ressources navigateur inutilisés.
 
 ## Contrat de stockage
