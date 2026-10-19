@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pas-communs"
-version = "0.6.0"
+version = "0.7.0"
 description = "Moteur de paquets SQLite et médias pour les applications de la famille Pas"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -21,4 +21,4 @@ where = ["src"]
 [tool.setuptools.package-data]
 "pas_communs.navigateur" = ["*.mjs"]
 
-"pas_communs" = ["polices/*.ttf", "polices/*.txt"]
+"pas_communs" = ["polices/*.ttf", "polices/*.txt", "installateur/*.iss", "installateur/*.ps1"]

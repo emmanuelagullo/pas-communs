@@ -83,3 +83,7 @@ SOC7 reste conditionnel ; ce cadrage ne qualifie pas la production CHRS.
 produits et le backend texte facultatif pour l'export PWA CHRS. Les templates,
 droits et politiques restent métier. Version 0.6.0 distincte de 0.5.0 ; aucun
 modèle, format de paquet ou stockage existant déplacé.
+
+#SOC3b : version 0.7.0, installateur Windows Inno Setup et banc PowerShell
+communs aux deux produits. Conserver les identités historiques de Petits Pas ;
+Pas à Pas dispose d’un setup propre et du ZIP portable. Voir LOCAL.md.

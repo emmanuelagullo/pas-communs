@@ -46,11 +46,36 @@ PyInstaller et les modules de tests applicatifs sont exclus du programme.
 une archive ZIP Windows ou tar.gz Linux. Une erreur de vérification interdit
 la création de la nouvelle archive. Construire sur le système cible.
 
-Les installateurs Petits Pas (Inno Setup, raccourcis et gestion des versions)
-sont conservés : ils continuent d'employer ses chemins et son exécutable.
-Le CHRS fournit à ce stade des archives de programme à extraire, sans assistant
-Windows ni création automatique de raccourcis. Leur publication publique reste
-un chantier distinct ; les nouveaux workflows fournissent des artefacts d'essai.
+Depuis #SOC3b (0.7.0), `pas_communs.installateur_windows` génère et compile
+l'installateur Inno Setup depuis une configuration JSON du produit. Le modèle
+`.iss` et le banc PowerShell sont des ressources du wheel. Inno Setup reste
+un outil de construction Windows, sans dépendance supplémentaire au runtime.
+
+```sh
+python -m pas_communs.installateur_windows --configuration scripts/installateur-windows.json
+# Sur un runner Windows jetable seulement :
+python -m pas_communs.installateur_windows --configuration scripts/installateur-windows.json --verifier
+```
+
+Construire le programme avant le setup. La version provient du fichier généré
+version-application.txt (UTF-8 avec ou sans BOM), ou de --version. Le nom et
+l'AppId, l'URL publique et le dossier de données sont explicites dans le JSON.
+Le programme est installé sous LOCALAPPDATA/Programs/<programme>/app sans
+élévation. L'AppId, le raccourci et le chemin Petits Pas sont conservés pour
+reconnaître les installations existantes. Aucun format de données ne change.
+
+Le banc --verifier refuse un compte avec installation ou données déjà présentes.
+Il exige un environnement CI, installe, contrôle le raccourci et le vrai
+exécutable (--verifier-distribution), réinstalle puis désinstalle. Un fichier
+fictif dans le dossier de données doit rester identique à chaque étape ; seul
+ce témoin est ensuite retiré. Aucune directive ne supprime les données. Le ZIP
+portable reste disponible en parallèle du setup.
+
+La compilation et les contrôles Windows des deux produits sont en CI GitHub ;
+ils ne remplacent pas un essai interactif sur Windows 10/11 ou la qualification
+du moteur WebView2. Le setup ne fournit pas WebView2 ni signature numérique.
+Les publications restent manuelles et promeuvent le setup vérifié sans
+reconstruction, avec son empreinte.
 
 ## Qualification
 

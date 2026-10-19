@@ -38,3 +38,8 @@ Le banc Gunicorn est loopback Unix, sans suivi de redirection publique.
 Préserver les façades et ressources des carnets historiques. Installer les
 extras requirements-tests-pdf.txt dans les tests ; vérifier la police du wheel
 et sa licence. Le rendu texte ne remplace pas les carnets scolaires avec images.
+
+#SOC3b : les ressources Inno Setup et PowerShell sont dans le wheel. Préserver
+l’AppId et les chemins Petits Pas ; les données restent hors du programme.
+Tester les ressources installées et les CI Windows des deux consommateurs.
+Ne jamais lancer le banc d’installation sur un compte contenant des données.
