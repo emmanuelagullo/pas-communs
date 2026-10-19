@@ -78,3 +78,8 @@ second usage CHRS d'images, documents ou traitements n'est encore implémenté :
 aucune extraction ni nouvelle version du wheel n'est imposée. Développer les
 parcours CHRS, puis ouvrir SOC7b seulement sur un besoin commun constaté.
 SOC7 reste conditionnel ; ce cadrage ne qualifie pas la production CHRS.
+
+#SOC7b : [PDF.md](PDF.md) décrit le moteur WeasyPrint adopté par les deux
+produits et le backend texte facultatif pour l'export PWA CHRS. Les templates,
+droits et politiques restent métier. Version 0.6.0 distincte de 0.5.0 ; aucun
+modèle, format de paquet ou stockage existant déplacé.

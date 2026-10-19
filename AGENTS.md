@@ -33,3 +33,8 @@ recommandations check --deploy pour rendre un banc vert.
 la recette, ni déplacer les assertions métier. Préserver le format de manifeste
 Petits Pas, les décisions de promotion et le refus des bundles test/non marqués.
 Le banc Gunicorn est loopback Unix, sans suivi de redirection publique.
+
+#SOC7b : lire PDF.md. Ne pas importer les moteurs lourds au chargement du socle.
+Préserver les façades et ressources des carnets historiques. Installer les
+extras requirements-tests-pdf.txt dans les tests ; vérifier la police du wheel
+et sa licence. Le rendu texte ne remplace pas les carnets scolaires avec images.

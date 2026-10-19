@@ -17,7 +17,7 @@ test:
     - python -m pip install -r requirements-construction.txt
     - python scripts/construire-wheel.py
     - python -m pip install --no-deps dist/*.whl
-    - python -m pip install -r requirements-tests-auth.txt
+    - python -m pip install -r requirements-tests-auth.txt -r requirements-tests-pdf.txt
     - python -m unittest discover -s tests
     - python tests/verifier_authentification_django.py
     - python -m pip check

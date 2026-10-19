@@ -1,9 +1,9 @@
 # Publication du wheel et adoption
 
-## Adoption courante (#SOC6)
+## Adoption courante (#SOC7b)
 
-1. Appliquer les patches jusqu’à #SOC6b de Pas communs et pousser son `main` sur les deux forges.
-2. Attendre les contrôles, puis poser le tag `0.5.0` sur le commit validé et
+1. Appliquer les patches jusqu’à #SOC7b de Pas communs et pousser son `main` sur les deux forges.
+2. Attendre les contrôles, puis poser le tag `0.6.0` sur le commit validé et
    pousser ce même tag sur les deux forges.
 3. Le workflow GitHub teste, construit et publie un wheel et `SHA256SUMS` dans
    une release GitHub. GitLab reste la source de référence et vérifie le code.

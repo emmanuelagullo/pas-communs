@@ -35,7 +35,7 @@ lui-même accepte Python 3.10 ou plus récent, dont Python 3.14/Pyodide.
 ```sh
 python -m pip install -r requirements-construction.txt
 python scripts/construire-wheel.py
-python -m pip install --no-deps dist/pas_communs-0.5.0-py3-none-any.whl
+python -m pip install --no-deps dist/pas_communs-0.6.0-py3-none-any.whl
 python -m unittest discover -s tests
 python -m pip check
 ```
@@ -84,3 +84,9 @@ La version 0.4.0 publiée reste immuable.
 et d'intégrité des candidats, et banc HTTP Gunicorn local. Lire CI-PUBLICATION.md.
 Aucun workflow distant mobile ou registre supplémentaire n'est requis. Les
 décisions de déploiement/publication restent dans chaque produit.
+
+## PDF (#SOC7b)
+
+La version 0.6.0 partage les appels WeasyPrint natifs et fournit un backend
+PDF texte facultatif pour la PWA CHRS ; voir [PDF.md](PDF.md). Les modèles,
+les droits et les dépendances propres aux profils restent dans les produits.

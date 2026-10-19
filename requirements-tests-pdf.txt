@@ -1,0 +1,5 @@
+# Backend texte facultatif ; pas de Pango dans les tests unitaires du socle.
+fpdf2==2.8.4
+fonttools==4.60.1
+defusedxml==0.7.1
+pypdf==6.1.1
