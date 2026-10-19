@@ -62,7 +62,10 @@ class InstallateurTests(unittest.TestCase):
             def compiler(cmd,**kw):
                 if cmd[0]=='ISCC.exe':setup.write_bytes(b'setup fictif')
             with patch.object(w.sys,'platform','win32'),patch.object(w.subprocess,'run',side_effect=compiler) as run:
-                self.assertEqual(w.construire(f,root,'0.2.0','ISCC.exe',True),setup)
+                # Windows peut exposer le même fichier sous son nom 8.3 et
+                # sous son chemin long : comparer l'identité du fichier.
+                resultat=w.construire(f,root,'0.2.0','ISCC.exe',True)
+                self.assertTrue(resultat.samefile(setup))
                 self.assertEqual(len(run.call_args_list),2)
                 self.assertTrue(all(a.kwargs['check'] for a in run.call_args_list))
                 self.assertIn('-File',run.call_args_list[1].args[0])
