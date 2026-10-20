@@ -83,3 +83,8 @@ une CI du socle verte ne qualifie ni leurs appareils, ni leurs déploiements.
 Aucun réseau n'est nécessaire au fonctionnement autonome après distribution.
 Les dépendances lourdes restent facultatives et propres aux profils utilisateurs.
 Code et documentation : AGPL-3.0-or-later, voir [LICENSE](LICENSE).
+
+Candidat suivant **0.9.0**, non publié par ce patch : état de restauration extrait
+de Petits Pas et neutralisation explicite des tables d'une copie privée.
+Voir [SAUVEGARDES.md](SAUVEGARDES.md) pour les écarts et la qualification.
+Publier cette nouvelle version avant les adoptions applicatives ; 0.8.0 reste immuable.

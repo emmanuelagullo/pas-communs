@@ -136,3 +136,7 @@ l'export comme à l'import sans renommer les données. Le runtime Pyodide est
 sélectionné explicitement dans les constructeurs ; les politiques de promotion
 et de déploiement restent applicatives. Qualifier les octets du wheel et les
 deux consommateurs ; aucune installation pip n'est implicite dans cette recette.
+
+#SOC — copies : lire SAUVEGARDES.md pour le candidat 0.9.0. Les tables à vider
+restent choisies par le produit ; le socle ne connaît aucun modèle CHRS/scolaire.
+Ne pas appliquer une restauration tant que HTTP et les connexions sont ouverts.

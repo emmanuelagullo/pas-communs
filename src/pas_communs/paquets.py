@@ -6,6 +6,7 @@ import shutil
 import sqlite3
 import stat
 import tempfile
+import threading
 import uuid
 from contextlib import closing
 from dataclasses import dataclass
@@ -274,3 +275,60 @@ def appliquer_restauration(paquet, preparation):
 def lire_resultat(paquet):
     chemin = paquet / RESULTAT
     return json.loads(chemin.read_text(encoding="utf-8")) if chemin.exists() else None
+
+
+class RestaurationLocale:
+    """Préparation → confirmation, issue du parcours historique Petits Pas.
+
+    Une instance par processus/profil. L'appelant sérialise ses requêtes,
+    contrôle les droits et ferme le serveur avant appliquer_restauration.
+    """
+    def __init__(self):
+        self._verrou = threading.Lock()
+        self._preparation = None
+        self._attente = None
+
+    def retenir(self, preparation):
+        with self._verrou:
+            if self._attente is not None or self._preparation is not None:
+                raise ValueError("Une restauration est déjà en préparation.")
+            self._preparation = preparation
+
+    def preparation(self):
+        with self._verrou:
+            return self._preparation
+
+    def annuler(self):
+        with self._verrou:
+            preparation, self._preparation = self._preparation, None
+        if preparation is not None:
+            shutil.rmtree(preparation.etape)
+
+    def confirmer(self):
+        with self._verrou:
+            if self._preparation is None or self._attente is not None:
+                raise ValueError("Aucune restauration à confirmer.")
+            self._attente, self._preparation = self._preparation, None
+            return self._attente
+
+    def attente(self):
+        with self._verrou:
+            return self._attente
+
+
+def vider_tables_copie(base, tables):
+    """Vider les seules tables demandées par le produit, dans une copie privée.
+
+    Ne crée jamais de base absente. Ne choisit ni table ni politique TOTP.
+    Les tables absentes des anciens schémas sont ignorées.
+    """
+    base = Path(base)
+    if not base.is_file() or base.is_symlink():
+        raise ValueError("Base de copie absente ou lien symbolique refusé.")
+    with closing(sqlite3.connect(base)) as db, db:
+        for table in tables:
+            if not isinstance(table, str) or not table:
+                raise ValueError("Nom de table invalide.")
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone():
+                identifiant = table.replace('"', '""')
+                db.execute(f'DELETE FROM "{identifiant}"')

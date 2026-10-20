@@ -77,3 +77,15 @@ médias natifs et externes sont contrôlés avant d'ouvrir la destination ZIP ; 
 export refusé pour son nom ne détruit donc pas une destination existante. Le
 moteur n'ajoute pas de politique générale d'écrasement : les produits conservent
 leur réservation exclusive et leurs confirmations.
+
+## Préparation locale commune (0.9.0)
+
+`RestaurationLocale` extrait l'état du parcours Petits Pas : retenir, preparation,
+annuler, confirmer, attente. Aucune activation ni permission implicite. Annuler
+nettoie seulement une préparation non confirmée. Après confirmation, l'appelant
+arrête HTTP, ferme les connexions, puis applique le remplacement historique.
+
+`vider_tables_copie(base, tables)` vide dans une transaction les tables explicitement
+choisies par le produit, en ignorant celles absentes des anciens schémas. Il refuse
+une base absente. Ne jamais lui passer la base active. L'appelant conserve clés,
+facteurs et décisions de récupération. Voir [SAUVEGARDES.md](SAUVEGARDES.md).

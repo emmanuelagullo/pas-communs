@@ -95,3 +95,11 @@ tag 0.5.0 après CI verte. Les deux consommateurs épinglent les mêmes octets.
 Ne pas publier l'ancien candidat #SOC6a ni remplacer 0.4.0.
 Les outils partagés décrivent/vérifient des octets ; ils ne donnent pas une
 permission de publier les applications. Lire CI-PUBLICATION.md.
+
+## Candidat 0.9.0 — sauvegardes locales
+
+Ce patch prépare une nouvelle version ; il ne publie rien. Qualifier selon
+SAUVEGARDES.md, publier le tag 0.9.0 sur les deux forges et promouvoir le wheel
+exact vérifié. Comparer l'empreinte publique avec celles des deux patches
+consommateurs avant leur adoption. Un écart impose de corriger les adoptions,
+jamais de remplacer un wheel déjà publié.
