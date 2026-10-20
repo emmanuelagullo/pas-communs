@@ -88,3 +88,9 @@ Candidat suivant **0.9.0**, non publié par ce patch : état de restauration ext
 de Petits Pas et neutralisation explicite des tables d'une copie privée.
 Voir [SAUVEGARDES.md](SAUVEGARDES.md) pour les écarts et la qualification.
 Publier cette nouvelle version avant les adoptions applicatives ; 0.8.0 reste immuable.
+
+## Sites publics Hugo
+
+Le thème commun des deux applications se trouve dans `hugo/pas/`.
+Il se consomme par sous-module Git épinglé, sans changer le wheel Python.
+Lire [HUGO.md](HUGO.md) pour les frontières et la qualification des deux sites.

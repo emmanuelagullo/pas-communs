@@ -83,3 +83,9 @@ moteur de formulaires et reporting réglementaire exhaustif.
 Ces décisions ne bloquent pas le prototype fictif unique. Le cadrage déjà retenu
 pour CHRS1 se trouve dans V0-METIER.md, pas dans une analogie scolaire. Ne pas déduire
 les réponses des classes, années scolaires ou fonctions de Petits Pas.
+
+## Sites publics
+
+Le thème autonome Hugo et son contrat de consommation sont dans HUGO.md.
+Cette ressource de construction est épinglée par commit Git dans les sites,
+indépendamment du wheel Python. Les sites et contenus restent applicatifs.

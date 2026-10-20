@@ -140,3 +140,8 @@ deux consommateurs ; aucune installation pip n'est implicite dans cette recette.
 #SOC — copies : lire SAUVEGARDES.md pour le candidat 0.9.0. Les tables à vider
 restent choisies par le produit ; le socle ne connaît aucun modèle CHRS/scolaire.
 Ne pas appliquer une restauration tant que HTTP et les connexions sont ouverts.
+
+#SOC — sites publics : lire HUGO.md. Le thème Hugo sous hugo/pas est consommé
+par un sous-module épinglé, indépendamment du wheel Python. Les contenus, liens,
+comptes fictifs et publications restent applicatifs. Vérifier les deux sites,
+les liens/ancres et le rendu responsive avant d’avancer leurs gitlinks.

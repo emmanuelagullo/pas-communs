@@ -1,0 +1,8 @@
+{{ define "main" }}
+  <article class="page shell prose">
+    <p class="eyebrow">{{ site.Title }}</p>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    {{ .Content }}
+  </article>
+{{ end }}

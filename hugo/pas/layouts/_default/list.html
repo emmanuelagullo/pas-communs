@@ -1,0 +1,13 @@
+{{ define "main" }}
+  <article class="page shell prose">
+    <p class="eyebrow">{{ if eq .Section "demarrer" }}Démarrer · Préparer son utilisation{{ else if eq .Section "demonstration" }}Essayer · Données fictives{{ else }}{{ site.Title }}{{ end }}</p>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    {{ .Content }}
+    {{ if ne .Params.showChildren false }}
+      {{ range .Pages }}
+        <p><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ with .Description }} — {{ . }}{{ end }}</p>
+      {{ end }}
+    {{ end }}
+  </article>
+{{ end }}
