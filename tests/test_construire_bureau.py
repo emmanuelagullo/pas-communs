@@ -63,6 +63,12 @@ class ConstruireBureauTests(unittest.TestCase):
         self.assertEqual(appels[2][0], "dmg")
         self.assertEqual(appels[2][3], "Prog")
 
+    def test_dossiers_de_sortie_independants_du_dossier_courant(self):
+        _, appels = self.construire("linux")
+        arguments = appels[0][1]
+        self.assertEqual(arguments[arguments.index("--distpath") + 1], str(self.projet / "dist"))
+        self.assertEqual(arguments[arguments.index("--workpath") + 1], str(self.projet / "build"))
+
     def test_macos_intel_refuse_avant_toute_construction(self):
         with self.assertRaises(SystemExit) as ctx:
             self.construire("darwin", machine="x86_64")

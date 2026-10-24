@@ -50,8 +50,9 @@ def construire(projet, spec, nom):
         spec = projet / spec
     # Le constructeur est une opération de CLI ; cwd ne concerne pas un serveur.
     os.chdir(projet)
-    run(["--noconfirm", "--clean", str(spec)])
     dist = projet / "dist"
+    # PyInstaller fixe ses dossiers par défaut au chargement du module, avant ce chdir.
+    run(["--noconfirm", "--clean", "--distpath", str(dist), "--workpath", str(projet / "build"), str(spec)])
     subprocess.run([str(chemin_programme(dist, nom, cible)), "--verifier-distribution"], check=True)
     if cible == "macos":
         return creer_dmg(dist / (nom + ".app"), dist / (nom + "-macos-" + ARCHITECTURE_MACOS + ".dmg"), nom)
