@@ -103,3 +103,12 @@ SAUVEGARDES.md, publier le tag 0.9.0 sur les deux forges et promouvoir le wheel
 exact vérifié. Comparer l'empreinte publique avec celles des deux patches
 consommateurs avant leur adoption. Un écart impose de corriger les adoptions,
 jamais de remplacer un wheel déjà publié.
+
+## Candidat 0.10.0 — programmes macOS arm64
+
+Ce patch prépare une nouvelle version ; il ne publie rien. Les consommateurs
+gardent leur wheel adopté (0.9.0) jusqu'à la publication immuable de 0.10.0.
+Après qualification (CI du socle, puis un banc de construction macOS), publier
+le tag 0.10.0 sur les deux forges et promouvoir le wheel exact vérifié. Les
+produits n'ont rien à changer pour Windows et Linux ; l'ajout de macOS dans
+leurs workflows et leurs sites est une décision propre à chaque produit.

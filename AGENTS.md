@@ -121,6 +121,12 @@ Préserver les façades et ressources des carnets historiques. Installer les
 extras requirements-tests-pdf.txt dans les tests ; vérifier la police du wheel
 et sa licence. Le rendu texte ne remplace pas les carnets scolaires avec images.
 
+#SOC3c : lire LOCAL.md (macOS). Identifier le système par pas_communs.plateforme,
+jamais par os.name. macOS est livré en arm64 seulement, non signé ; ne pas
+inventer de bundle_identifiant par défaut ni ajouter Intel, universal2 ou
+Windows ARM64 sans besoin explicite. Ne pas annoncer le PDF natif macOS avant
+sa qualification. Les noms historiques des archives Windows et Linux sont inchangés.
+
 #SOC3b : les ressources Inno Setup et PowerShell sont dans le wheel. Préserver
 l’AppId et les chemins Petits Pas ; les données restent hors du programme.
 Tester les ressources installées et les CI Windows des deux consommateurs.

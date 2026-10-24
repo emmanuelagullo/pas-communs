@@ -84,10 +84,12 @@ Aucun réseau n'est nécessaire au fonctionnement autonome après distribution.
 Les dépendances lourdes restent facultatives et propres aux profils utilisateurs.
 Code et documentation : AGPL-3.0-or-later, voir [LICENSE](LICENSE).
 
-Candidat suivant **0.9.0**, non publié par ce patch : état de restauration extrait
-de Petits Pas et neutralisation explicite des tables d'une copie privée.
-Voir [SAUVEGARDES.md](SAUVEGARDES.md) pour les écarts et la qualification.
-Publier cette nouvelle version avant les adoptions applicatives ; 0.8.0 reste immuable.
+Le code prépare **0.10.0**, non publié par ce patch : programmes macOS arm64 non
+signés (identification du système, emplacement des données, bundle `.app` et DMG).
+Voir [LOCAL.md](LOCAL.md). Les consommateurs restent sur leur wheel adopté
+(requirements-communs.txt, 0.9.0 pour l'instant) tant que 0.10.0 n'est pas publié
+immuablement ; 0.9.0 reste immuable. État de restauration extrait de Petits Pas
+depuis 0.9.0 : voir [SAUVEGARDES.md](SAUVEGARDES.md).
 
 ## Sites publics Hugo
 

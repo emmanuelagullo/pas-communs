@@ -8,7 +8,7 @@ Pas à Pas — Accompagnement. Le format ZIP #SOC2 et son API ne changent pas.
 `pas_communs.local` fournit :
 
 - `paquet_par_defaut(application)` : dossier XDG sous Linux, LOCALAPPDATA sous
-  Windows ; le slug du produit distingue toujours ses données ;
+  Windows, `~/Library/Application Support` sous macOS ; le slug du produit distingue toujours ses données ;
 - `verrouiller` : verrou interprocessus voisin du dossier, conservé à travers
   les renommages et libéré à la fin du contexte ;
 - `initialiser_paquet` : création de clé sous verrou, refus d'un paquet incomplet ;
@@ -43,8 +43,31 @@ PyInstaller et les modules de tests applicatifs sont exclus du programme.
 
 `python -m pas_communs.construire_bureau --spec CHEMIN --nom NOM` exécute le
 `.spec`, exige le succès de `--verifier-distribution` du binaire, puis prépare
-une archive ZIP Windows ou tar.gz Linux. Une erreur de vérification interdit
-la création de la nouvelle archive. Construire sur le système cible.
+une archive : ZIP Windows (`NOM-windows.zip`), tar.gz Linux (`NOM-linux.tar.gz`)
+ou image disque macOS (`NOM-macos-arm64.dmg`). Une erreur de vérification
+interdit la création de la nouvelle archive. Construire sur le système cible.
+
+## macOS (#SOC3c)
+
+Cibles livrées : Windows x64, Linux x86_64 (Ubuntu 24.04) et **macOS arm64
+seulement**. Intel n'est pas livré et Windows ARM64 non plus : l'ajout attend un
+besoin explicite. Le système est identifié par `pas_communs.plateforme.systeme`
+(`sys.platform`), jamais par `os.name`, qui classait macOS avec Linux.
+
+Le `.spec` du produit appelle `assembler(..., bundle_identifiant="fr.inria.produit")`.
+L'identifiant est obligatoire sous macOS, ignoré ailleurs, et doit rester stable :
+il fait l'identité du programme. Le socle n'en fournit jamais par défaut. Le
+résultat est un `NOM.app` (dossier PyInstaller embarqué, exécutable arm64 sans
+console) puis un DMG avec raccourci vers Applications. PyWebView emploie WKWebView
+via PyObjC : aucun moteur à embarquer. Les données restent hors du `.app`, sous
+`~/Library/Application Support/<application>/paquet-autonome`.
+
+Le programme n'est **ni signé ni notarisé**. Depuis macOS Sequoia, l'ouverture
+passe par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même » ;
+le produit doit le dire à ses utilisateurs. Le PDF natif (WeasyPrint/Pango) n'est
+pas assemblé sous macOS par ce jalon : à qualifier avant de le promettre.
+Les imports PyObjC listés par l'assembleur n'ont pas été exécutés sur un Mac par
+ce jalon : seule une CI macOS les qualifie, et pas un essai interactif.
 
 Depuis #SOC3b (0.7.0), `pas_communs.installateur_windows` génère et compile
 l'installateur Inno Setup depuis une configuration JSON du produit. Le modèle
@@ -83,7 +106,7 @@ le setup vérifié sans reconstruction, avec son empreinte.
 Tester le socle, chaque `.spec`, le premier compte CHRS, le verrou entre
 processus, l'arrêt des requêtes et la persistance après relance. Une vérification
 sans fenêtre ne qualifie pas le moteur graphique, les téléchargements du système
-ou la restauration réelle sur Windows/Linux. Ces essais restent dans les produits.
+ou la restauration réelle sur Windows/Linux/macOS. Ces essais restent dans les produits.
 Ne pas déduire une compatibilité universelle Linux de la seule construction
 Ubuntu 24.04. Les paquets de données ne sont jamais remplacés par les mises à
 jour du programme.
