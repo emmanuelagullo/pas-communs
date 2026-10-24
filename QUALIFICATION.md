@@ -62,6 +62,25 @@ tags et versions applicatifs restent indépendants. Les déploiements serveur
 conservent leurs procédures : cette adoption n'exige aucun nouveau réglage.
 
 
+## Programmes de bureau : application minimale (#SOC3c)
+
+`tests/application_minimale/` construit, à partir du wheel **installé**, un vrai
+programme de bureau sans métier : assemblage PyInstaller, vérification du programme
+gelé, extraction de l'archive livrée (zip, tar.gz ou DMG), données hors du
+programme et conservées d'un lancement à l'autre. Le workflow
+`programmes-minimaux.yml` l'exécute à chaque commit sur Ubuntu 24.04, Windows x64
+et macOS arm64 ; `qualification-publication.yml` le rejoue après la publication
+d'un tag sur le wheel téléchargé de la release, empreinte vérifiée. Ce second test
+qualifie les octets de la release, pas leur transfert vers GitLab Inria.
+
+Limites à retenir. La fenêtre réelle (Linux sous Xvfb, macOS, Windows), le PDF
+natif et l'installateur Windows sont informatifs jusqu'à avoir été vus verts en
+CI. Le job macOS est non bloquant pour la même raison ; le rendre bloquant
+(`experimental: false`) est une décision séparée. Les sondes PDF macOS passent
+sans variable d'environnement : un échec indique que Pango n'est pas embarqué dans
+le `.app`, ce qui est attendu tant que ce jalon n'est pas traité. Aucune CI ne
+remplace un essai sur un vrai poste, ni la qualification des produits.
+
 ## Versions des consommateurs
 
 Cette recette exige le même candidat dans les deux requirements pour une

@@ -23,6 +23,12 @@ Windows exige les DLL Pango collectées dans le programme ; le CHRS reprend le
 mécanisme d'assemblage déjà utilisé par Petits Pas, avec sa propre variable.
 Aucun moteur natif n'est importé lors du démarrage de la PWA.
 
+Compatibilité WeasyPrint : `recuperateur_medias` importe `default_url_fetcher`,
+retiré de l'API publique en WeasyPrint 70 (présent jusqu'en 69.0, version de la
+sonde de `tests/application_minimale`). Un produit qui adopterait 70 ou plus doit
+d'abord faire évoluer cette façade ; aucun produit n'est touché tant qu'il garde
+sa version épinglée.
+
 ## PDF texte dans le navigateur
 
 fiche_texte(titre, lignes) produit des octets PDF paginés via fpdf2 et la police

@@ -66,6 +66,8 @@ Le programme n'est **ni signé ni notarisé**. Depuis macOS Sequoia, l'ouverture
 passe par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même » ;
 le produit doit le dire à ses utilisateurs. Le PDF natif (WeasyPrint/Pango) n'est
 pas assemblé sous macOS par ce jalon : à qualifier avant de le promettre.
+L'application minimale `tests/application_minimale` qualifie cette chaîne en CI sur les
+trois systèmes (voir QUALIFICATION.md) ; elle ne remplace pas les bancs des produits.
 Les imports PyObjC listés par l'assembleur n'ont pas été exécutés sur un Mac par
 ce jalon : seule une CI macOS les qualifie, et pas un essai interactif.
 

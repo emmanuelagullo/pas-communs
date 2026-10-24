@@ -46,6 +46,15 @@ les mêmes garde-fous, sans reconstruction de l'artefact promu.
 Le wheel du socle reste publié par son workflow tagué existant, après tests,
 avec SHA256SUMS et vérification du téléchargement du brouillon.
 
+## Qualifier les octets publiés du socle
+
+Après la release d'un tag, `qualification-publication.yml` (déclenché par la fin du
+workflow de publication, ou à la main avec le tag) télécharge la release, vérifie
+SHA256SUMS et le nom du wheel, l'installe puis construit l'application minimale
+à partir de ces octets. Un événement de release créé avec GITHUB_TOKEN ne
+déclenche pas de workflow : c'est pourquoi `workflow_run` est employé. Ce test ne
+publie rien, n'a aucun secret et ne prouve pas la copie vers une autre forge.
+
 ## Réseau du profil serveur
 
 Les scripts produits préparent leurs bases/statiques fictifs et utilisent

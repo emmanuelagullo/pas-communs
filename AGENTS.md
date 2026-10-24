@@ -126,6 +126,9 @@ jamais par os.name. macOS est livré en arm64 seulement, non signé ; ne pas
 inventer de bundle_identifiant par défaut ni ajouter Intel, universal2 ou
 Windows ARM64 sans besoin explicite. Ne pas annoncer le PDF natif macOS avant
 sa qualification. Les noms historiques des archives Windows et Linux sont inchangés.
+tests/application_minimale se construit depuis le wheel installé, jamais depuis src/ ;
+ne pas y mettre de métier ni la promouvoir en produit. Ses étapes informatives et le
+job macOS ne deviennent bloquants que par décision explicite.
 
 #SOC3b : les ressources Inno Setup et PowerShell sont dans le wheel. Préserver
 l’AppId et les chemins Petits Pas ; les données restent hors du programme.
