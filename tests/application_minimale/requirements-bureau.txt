@@ -1,0 +1,11 @@
+# Construction de l'application minimale ; dépendances directes épinglées.
+# Linux : PyGObject, GTK et WebKitGTK 4.1 viennent des paquets Ubuntu, pas de pip.
+pyinstaller==6.22.3
+pywebview==6.2.1
+pythonnet==3.2.1; sys_platform == "win32"
+pyobjc-core==12.2.2; sys_platform == "darwin"
+pyobjc-framework-Cocoa==12.2.2; sys_platform == "darwin"
+pyobjc-framework-Quartz==12.2.2; sys_platform == "darwin"
+pyobjc-framework-Security==12.2.2; sys_platform == "darwin"
+pyobjc-framework-UniformTypeIdentifiers==12.2.2; sys_platform == "darwin"
+pyobjc-framework-WebKit==12.2.2; sys_platform == "darwin"

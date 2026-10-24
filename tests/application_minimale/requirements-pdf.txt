@@ -1,0 +1,4 @@
+# Sonde PDF natif (Linux et macOS seulement, informative).
+# 69.0 : la dernière version dont pas_communs.pdf fonctionne (WeasyPrint 70 retire
+# default_url_fetcher). Les produits gardent leur propre version épinglée.
+weasyprint==69.0

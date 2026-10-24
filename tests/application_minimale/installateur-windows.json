@@ -1,0 +1,7 @@
+{
+  "programme": "PasCommunsMinimale",
+  "nom": "Pas communs minimale",
+  "app_id": "PasCommunsMinimale.Local.Qualification",
+  "url": "https://gitlab.inria.fr/pas-communs/pas-communs",
+  "donnees": "pas-communs-minimale\\paquet-autonome"
+}
