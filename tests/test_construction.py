@@ -32,6 +32,74 @@ class ConstructionTests(unittest.TestCase):
                 "EXE": lambda *args, **kw: appels.append(kw), "COLLECT": lambda *args, **kw: kw["name"]}
             with patch.dict("sys.modules", modules), patch.object(construction, "os", SimpleNamespace(name="nt", environ={} )):
                 nom = construction.assembler(racine, espace, nom="ApplicationFictive",
-                    settings="fictif.settings", ressources=[("templates", "templates")], paquets=["fictif"])
+                    settings="fictif.settings", ressources=[("templates", "templates")], paquets=["fictif"],
+                    plateforme="win32")
             self.assertEqual(nom, "ApplicationFictive")
             self.assertFalse(appels[0]["console"])
+
+    def assembler_fictif(self, plateforme, **options):
+        """Assembler sans PyInstaller : retourne les appels reçus par l'espace du .spec."""
+        with tempfile.TemporaryDirectory() as t:
+            racine = Path(t).resolve()
+            (racine / "scripts").mkdir()
+            (racine / "scripts/lancer-local.py").write_text("# lanceur fictif")
+            hooks = ModuleType("PyInstaller.utils.hooks")
+            hooks.collect_data_files = lambda p, **kw: []
+            hooks.collect_submodules = lambda p, **kw: [p + ".module_fictif"]
+            modules = {n: ModuleType(n) for n in ["PyInstaller", "PyInstaller.utils"]}
+            modules[hooks.__name__] = hooks
+            appels = {}
+            def enregistrer(nom_appel, resultat=None):
+                def appel(*args, **kw):
+                    appels[nom_appel] = (args, kw)
+                    return resultat if resultat is not None else nom_appel
+                return appel
+            def analyser(entrees, **kw):
+                appels["Analysis"] = (entrees, kw)
+                return SimpleNamespace(pure=[], scripts=[], binaries=[], datas=[])
+            espace = {"Analysis": analyser, "PYZ": lambda _: None, "EXE": enregistrer("EXE"),
+                "COLLECT": enregistrer("COLLECT"), "BUNDLE": enregistrer("BUNDLE")}
+            with patch.dict("sys.modules", modules):
+                resultat = construction.assembler(racine, espace, nom="ApplicationFictive",
+                    settings="fictif.settings", ressources=[], paquets=[], plateforme=plateforme, **options)
+        return resultat, appels
+
+    def test_linux_garde_la_console_et_ne_produit_pas_de_bundle(self):
+        resultat, appels = self.assembler_fictif("linux")
+        self.assertEqual(resultat, "COLLECT")
+        self.assertNotIn("BUNDLE", appels)
+        self.assertTrue(appels["EXE"][1]["console"])
+        self.assertNotIn("target_arch", appels["EXE"][1])
+        self.assertIn("webview.platforms.gtk", appels["Analysis"][1]["hiddenimports"])
+
+    def test_macos_produit_un_bundle_arm64_sans_console(self):
+        resultat, appels = self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif")
+        self.assertEqual(resultat, "BUNDLE")
+        exe = appels["EXE"][1]
+        self.assertFalse(exe["console"])
+        self.assertEqual(exe["target_arch"], "arm64")
+        bundle = appels["BUNDLE"][1]
+        self.assertEqual(bundle["name"], "ApplicationFictive.app")
+        self.assertEqual(bundle["bundle_identifier"], "fr.inria.fictif")
+        self.assertTrue(bundle["info_plist"]["NSHighResolutionCapable"])
+        imports = appels["Analysis"][1]["hiddenimports"]
+        self.assertIn("webview.platforms.cocoa", imports)
+        self.assertNotIn("webview.platforms.gtk", imports)
+        self.assertNotIn("webview.platforms.winforms", imports)
+        self.assertEqual(appels["Analysis"][1]["binaries"], [])
+
+    def test_macos_refuse_un_identifiant_de_bundle_absent_ou_invalide(self):
+        for identifiant in (None, "", "sansPoint", ".fr.inria", "fr.inria.", "fr.inria.é", "fr inria.fictif"):
+            with self.subTest(identifiant=identifiant), self.assertRaises(ValueError):
+                self.assembler_fictif("darwin", bundle_identifiant=identifiant)
+
+    def test_identifiant_de_bundle_ignore_hors_macos(self):
+        for plateforme in ("linux", "win32"):
+            with self.subTest(plateforme=plateforme):
+                resultat, appels = self.assembler_fictif(plateforme, bundle_identifiant="fr.inria.fictif")
+                self.assertEqual(resultat, "COLLECT")
+                self.assertNotIn("BUNDLE", appels)
+
+    def test_systeme_non_pris_en_charge_refuse(self):
+        with self.assertRaises(ValueError):
+            self.assembler_fictif("freebsd14")

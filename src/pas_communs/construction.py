@@ -2,11 +2,25 @@
 import os
 from pathlib import Path
 
+from .plateforme import ARCHITECTURE_MACOS, systeme
+
+
+def _verifier_identifiant_bundle(identifiant):
+    autorises = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.")
+    if (not identifiant or "." not in identifiant or identifiant.startswith(".")
+            or identifiant.endswith(".") or any(c not in autorises for c in identifiant)):
+        raise ValueError("macOS : bundle_identifiant explicite et stable requis, par exemple fr.inria.produit.")
+
 
 def assembler(racine, espace, *, nom, settings, ressources, paquets,
               imports=(), entree="scripts/lancer-local.py", pango_variable=None,
-              paquets_ressources=(), exclusions=()):
+              paquets_ressources=(), exclusions=(), plateforme=None,
+              bundle_identifiant=None):
     from PyInstaller.utils.hooks import collect_data_files, collect_submodules
+    cible = systeme(plateforme, strict=True)
+    if cible == "macos":
+        # L'identifiant fixe l'identité du programme pour macOS : jamais de valeur par défaut.
+        _verifier_identifiant_bundle(bundle_identifiant)
     racine = Path(racine).resolve()
     if not (racine / entree).is_file():
         raise FileNotFoundError(f"Lanceur introuvable : {racine / entree}")
@@ -21,7 +35,7 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
             p == "tests" or p.startswith(("test_", "tests_")) for p in nom_module.split("."))
     for paquet in ("pas_communs", *paquets):
         imports += collect_submodules(paquet, filter=module_runtime)
-    if os.name == "nt":
+    if cible == "windows":
         imports += ["webview.platforms.winforms", "webview.platforms.edgechromium"]
         donnees += collect_data_files("webview", includes=["lib/**"])
         pango_bin = os.environ.get(pango_variable) if pango_variable else None
@@ -42,6 +56,11 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
             # dans _internal ; WeasyPrint les cherchera dans ce dossier au lancement.
             binaires = [(str(dossier_pango / nom), ".") for nom in bibliotheques_pango]
 
+    elif cible == "macos":
+        # WKWebView via PyObjC : aucun moteur à embarquer. Le PDF natif (Pango)
+        # n'est pas assemblé ici ; sa qualification sous macOS reste à faire.
+        binaires = []
+        imports += ["webview.platforms.cocoa", "objc", "Foundation", "AppKit", "WebKit", "PyObjCTools"]
     else:
         binaires = []
         imports += ["webview.platforms.gtk", "gi.repository.Gtk", "gi.repository.WebKit2"]
@@ -60,7 +79,14 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
         runtime_hooks=[], excludes=[*exclusions, *sorted(outils), "PyInstaller"], noarchive=False,
     )
     archive = espace["PYZ"](analyse.pure)
-    programme = espace["EXE"](archive, analyse.scripts, [], exclude_binaries=True,
-        name=nom, console=os.name != "nt")
-    return espace["COLLECT"](programme, analyse.binaries, analyse.datas,
+    options_exe = {"name": nom, "console": cible == "linux"}
+    if cible == "macos":
+        options_exe["target_arch"] = ARCHITECTURE_MACOS
+    programme = espace["EXE"](archive, analyse.scripts, [], exclude_binaries=True, **options_exe)
+    collecte = espace["COLLECT"](programme, analyse.binaries, analyse.datas,
         strip=False, upx=False, name=nom)
+    if cible != "macos":
+        return collecte
+    # Le dossier PyInstaller est conservé : le .app l'embarque, sans binaire monolithique.
+    return espace["BUNDLE"](collecte, name=nom + ".app", bundle_identifier=bundle_identifiant,
+        info_plist={"CFBundleName": nom, "NSHighResolutionCapable": True})
