@@ -14,6 +14,8 @@ from socketserver import ThreadingMixIn
 from urllib.request import urlopen
 from wsgiref.simple_server import WSGIServer, make_server
 
+from .plateforme import systeme
+
 if os.name == "nt":
     import msvcrt
 else:
@@ -22,11 +24,13 @@ else:
 
 def paquet_par_defaut(application, *, environnement=None, plateforme=None):
     environnement = os.environ if environnement is None else environnement
-    plateforme = os.name if plateforme is None else plateforme
     if not application or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in application):
         raise ValueError("Identifiant d’application invalide.")
-    if plateforme == "nt":
+    cible = systeme(plateforme)
+    if cible == "windows":
         racine = Path(environnement.get("LOCALAPPDATA") or Path.home() / "AppData/Local")
+    elif cible == "macos":
+        racine = Path(environnement.get("HOME") or Path.home()) / "Library/Application Support"
     else:
         racine = Path(environnement.get("XDG_DATA_HOME") or Path.home() / ".local/share")
     return racine.expanduser() / application / "paquet-autonome"

@@ -37,6 +37,22 @@ class LocalTests(unittest.TestCase):
         self.assertEqual(local.paquet_par_defaut("application-a", environnement=env, plateforme="nt"), a)
         self.assertFalse(a.exists())
 
+    def test_chemin_macos_sous_library_application_support(self):
+        env = {"HOME": str(self.parent), "XDG_DATA_HOME": str(self.parent / "xdg"),
+            "LOCALAPPDATA": str(self.parent / "windows")}
+        attendu = self.parent / "Library/Application Support/application-a/paquet-autonome"
+        self.assertEqual(local.paquet_par_defaut("application-a", environnement=env, plateforme="darwin"), attendu)
+        self.assertEqual(local.paquet_par_defaut("application-a", environnement=env, plateforme="macos"), attendu)
+
+    def test_valeurs_historiques_et_systemes_inconnus_gardent_le_comportement_linux(self):
+        env = {"XDG_DATA_HOME": str(self.parent), "LOCALAPPDATA": str(self.parent / "windows")}
+        attendu = self.parent / "application-a/paquet-autonome"
+        for plateforme in ("posix", "linux", "linux2", "freebsd14"):
+            with self.subTest(plateforme=plateforme):
+                self.assertEqual(local.paquet_par_defaut("application-a", environnement=env, plateforme=plateforme), attendu)
+        self.assertEqual(local.paquet_par_defaut("application-a", environnement=env, plateforme="win32"),
+            self.parent / "windows/application-a/paquet-autonome")
+
     def test_verrou_refuse_autre_processus_et_survit_au_renommage(self):
         paquet = self.paquet()
         code = "from pathlib import Path; from pas_communs.local import verrouiller; import sys; "
