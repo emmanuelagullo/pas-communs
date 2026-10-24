@@ -84,6 +84,8 @@ class ConstructionTests(unittest.TestCase):
         self.assertTrue(bundle["info_plist"]["NSHighResolutionCapable"])
         imports = appels["Analysis"][1]["hiddenimports"]
         self.assertIn("webview.platforms.cocoa", imports)
+        # PyWebView 6 l'importe dans une fonction : invisible pour l'analyse statique.
+        self.assertIn("UniformTypeIdentifiers", imports)
         self.assertNotIn("webview.platforms.gtk", imports)
         self.assertNotIn("webview.platforms.winforms", imports)
         self.assertEqual(appels["Analysis"][1]["binaries"], [])

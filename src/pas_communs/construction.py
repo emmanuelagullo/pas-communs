@@ -60,7 +60,8 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
         # WKWebView via PyObjC : aucun moteur à embarquer. Le PDF natif (Pango)
         # n'est pas assemblé ici ; sa qualification sous macOS reste à faire.
         binaires = []
-        imports += ["webview.platforms.cocoa", "objc", "Foundation", "AppKit", "WebKit", "PyObjCTools"]
+        imports += ["webview.platforms.cocoa", "objc", "Foundation", "AppKit", "WebKit", "PyObjCTools",
+            "UniformTypeIdentifiers"]
     else:
         binaires = []
         imports += ["webview.platforms.gtk", "gi.repository.Gtk", "gi.repository.WebKit2"]
