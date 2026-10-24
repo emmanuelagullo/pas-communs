@@ -1,0 +1,44 @@
+name: Environnement de l'application minimale
+description: Dépendances système et Python pour construire l'application minimale de qualification.
+inputs:
+  pdf:
+    description: Installer la sonde PDF natif (Linux et macOS).
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v6
+      if: runner.os != 'Linux'
+      with:
+        python-version: '3.12'
+    - name: Dépendances Linux (GTK, WebKitGTK 4.1, Xvfb) et environnement Python du système
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends python3-venv python3-gi gir1.2-gtk-3.0 \
+          gir1.2-webkit2-4.1 xvfb xauth libpango-1.0-0 libpangoft2-1.0-0
+        # setup-python ne voit pas PyGObject ; le venv reprend le Python d'Ubuntu et ses paquets système.
+        /usr/bin/python3 -m venv --system-site-packages "$GITHUB_WORKSPACE/.venv-bureau"
+        echo "$GITHUB_WORKSPACE/.venv-bureau/bin" >> "$GITHUB_PATH"
+    - name: Pango pour la sonde PDF (macOS)
+      if: runner.os == 'macOS' && inputs.pdf == 'true'
+      shell: bash
+      run: brew install pango
+    - name: Inno Setup (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        if (-not (Get-ChildItem "${env:ProgramFiles(x86)}\Inno Setup *\ISCC.exe" -ErrorAction SilentlyContinue)) {
+          choco install innosetup --no-progress -y
+        }
+      continue-on-error: true
+    - name: Dépendances Python de l'application minimale
+      shell: bash
+      run: |
+        set -euo pipefail
+        PY=python
+        if [ "$RUNNER_OS" = Linux ]; then PY="$GITHUB_WORKSPACE/.venv-bureau/bin/python"; fi
+        "$PY" -m pip install -r tests/application_minimale/requirements-bureau.txt
+        if [ "${{ inputs.pdf }}" = true ]; then "$PY" -m pip install -r tests/application_minimale/requirements-pdf.txt; fi
