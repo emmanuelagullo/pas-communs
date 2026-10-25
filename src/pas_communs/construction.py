@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 
+from .pango_macos import fichiers_a_embarquer
 from .plateforme import ARCHITECTURE_MACOS, systeme
 
 
@@ -57,9 +58,15 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
             binaires = [(str(dossier_pango / nom), ".") for nom in bibliotheques_pango]
 
     elif cible == "macos":
-        # WKWebView via PyObjC : aucun moteur à embarquer. Le PDF natif (Pango)
-        # n'est pas assemblé ici ; sa qualification sous macOS reste à faire.
+        # WKWebView via PyObjC : aucun moteur à embarquer. Le PDF natif embarque Pango si
+        # pango_variable désigne le dossier de ses dylibs (ex. /opt/homebrew/lib) ; au lancement,
+        # pas_communs.pango_macos les fait charger à WeasyPrint.
         binaires = []
+        if pango_variable:
+            dossier_pango = os.environ.get(pango_variable)
+            if not dossier_pango:
+                raise RuntimeError(f"Définir {pango_variable} vers le dossier des dylibs Pango (ex. /opt/homebrew/lib).")
+            binaires = [(str(chemin), ".") for chemin in fichiers_a_embarquer(dossier_pango)]
         imports += ["webview.platforms.cocoa", "objc", "Foundation", "AppKit", "WebKit", "PyObjCTools",
             "UniformTypeIdentifiers"]
     else:

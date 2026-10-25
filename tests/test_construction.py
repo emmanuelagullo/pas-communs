@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import tempfile
 from types import ModuleType, SimpleNamespace
 import unittest
@@ -105,3 +106,28 @@ class ConstructionTests(unittest.TestCase):
     def test_systeme_non_pris_en_charge_refuse(self):
         with self.assertRaises(ValueError):
             self.assembler_fictif("freebsd14")
+
+    def test_macos_embarque_pango_si_demande(self):
+        from pas_communs import pango_macos
+        with tempfile.TemporaryDirectory() as dossier:
+            dossier = Path(dossier).resolve()
+            for demande, reel in pango_macos.BIBLIOTHEQUES:
+                (dossier / reel).write_bytes(b"x")
+                if demande != reel:
+                    (dossier / demande).symlink_to(reel)
+            with patch.dict("os.environ", {"PANGO_MACOS_FICTIF": str(dossier)}):
+                _, appels = self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif",
+                    pango_variable="PANGO_MACOS_FICTIF")
+            binaires = appels["Analysis"][1]["binaries"]
+            self.assertEqual(sorted(Path(source).name for source, _ in binaires),
+                sorted(reel for _, reel in pango_macos.BIBLIOTHEQUES))
+            self.assertEqual({destination for _, destination in binaires}, {"."})
+
+    def test_macos_pango_demande_sans_dossier_ou_incomplet_refuse(self):
+        with patch.dict("os.environ", {}, clear=False):
+            os.environ.pop("PANGO_MACOS_FICTIF", None)
+            with self.assertRaises(RuntimeError):
+                self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif", pango_variable="PANGO_MACOS_FICTIF")
+        with tempfile.TemporaryDirectory() as vide, patch.dict("os.environ", {"PANGO_MACOS_FICTIF": vide}):
+            with self.assertRaises(FileNotFoundError):
+                self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif", pango_variable="PANGO_MACOS_FICTIF")

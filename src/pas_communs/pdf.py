@@ -3,6 +3,8 @@ import mimetypes
 from importlib.resources import files
 from urllib.parse import quote, unquote
 
+from .pango_macos import preparer_pango_embarque
+
 
 def url_media(nom, *, schema):
     return schema + quote(nom, safe='')
@@ -11,6 +13,7 @@ def url_media(nom, *, schema):
 def recuperateur_medias(noms, *, schema, ouvrir, defaut=None):
     """Liste explicite de médias autorisés ; politique des autres URL fournie."""
     if defaut is None:
+        preparer_pango_embarque()
         from weasyprint import default_url_fetcher
         defaut = default_url_fetcher
     autorises = frozenset(noms)
@@ -28,6 +31,7 @@ def recuperateur_medias(noms, *, schema, ouvrir, defaut=None):
 
 def rendre_html(html, *, base_url, feuille_style, recuperer):
     """Même rendu WeasyPrint que les carnets historiques, sans interpréter le métier."""
+    preparer_pango_embarque()
     from weasyprint import CSS, HTML
     return HTML(string=html, base_url=base_url, media_type='print',
                 url_fetcher=recuperer).write_pdf(stylesheets=[CSS(filename=feuille_style)])
