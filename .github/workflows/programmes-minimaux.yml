@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+# La console Windows écrit en cp1252 : sans UTF-8, les accents des journaux sont illisibles.
+env:
+  PYTHONUTF8: '1'
+
 jobs:
   programme:
     name: ${{ matrix.nom }}
