@@ -21,6 +21,7 @@ Les modèles HTML/CSS et le nom du téléchargement restent dans les produits.
 WeasyPrint/Pango reste dans les profils serveur/bureau qui en ont besoin.
 Windows exige les DLL Pango collectées dans le programme ; le CHRS reprend le
 mécanisme d'assemblage déjà utilisé par Petits Pas, avec sa propre variable.
+macOS embarque ses dylibs de la même façon (`pas_communs.pango_macos`, voir LOCAL.md).
 Aucun moteur natif n'est importé lors du démarrage de la PWA.
 
 Compatibilité WeasyPrint : `recuperateur_medias` importe `default_url_fetcher`,

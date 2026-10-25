@@ -124,8 +124,9 @@ et sa licence. Le rendu texte ne remplace pas les carnets scolaires avec images.
 #SOC3c : lire LOCAL.md (macOS). Identifier le système par pas_communs.plateforme,
 jamais par os.name. macOS est livré en arm64 seulement, non signé ; ne pas
 inventer de bundle_identifiant par défaut ni ajouter Intel, universal2 ou
-Windows ARM64 sans besoin explicite. Ne pas annoncer le PDF natif macOS avant
-sa qualification. Les noms historiques des archives Windows et Linux sont inchangés.
+Windows ARM64 sans besoin explicite. Le PDF natif macOS n'existe que si le produit
+passe pango_variable à assembler ; ne l'annoncer qu'après une sonde verte sans Homebrew
+(--isoler-homebrew) et en indiquant la version minimale de macOS mesurée. Les noms historiques des archives Windows et Linux sont inchangés.
 Le message de moteur absent (pas_communs.moteur) et le shortcode aide-installation
 décrivent l'état réel des programmes (non signés, macOS arm64, Ubuntu 24.04) : les
 mettre à jour ensemble si cet état change, avant d'avancer un gitlink Hugo.

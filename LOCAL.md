@@ -76,12 +76,27 @@ via PyObjC : aucun moteur à embarquer. Les données restent hors du `.app`, sou
 
 Le programme n'est **ni signé ni notarisé**. Depuis macOS Sequoia, l'ouverture
 passe par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même » ;
-le produit doit le dire à ses utilisateurs. Le PDF natif (WeasyPrint/Pango) n'est
-pas assemblé sous macOS par ce jalon : à qualifier avant de le promettre.
+le produit doit le dire à ses utilisateurs.
+
+PDF natif (WeasyPrint/Pango). Un Mac d'utilisateur n'a pas Homebrew et macOS ne
+cherche pas les bibliothèques par nom hors de /usr/lib. Pour l'embarquer, le `.spec`
+passe `pango_variable="NOM_DE_VARIABLE"` à `assembler`, et la variable d'environnement
+désigne, à la construction, le dossier des dylibs (`/opt/homebrew/lib`) : les six
+bibliothèques que WeasyPrint charge sont copiées dans le bundle, PyInstaller y ajoute
+leurs dépendances et réécrit leurs chemins. Sans variable, aucun PDF natif n'est
+embarqué. Au lancement, `pas_communs.pdf` appelle `pango_macos.preparer_pango_embarque()`
+(un produit qui importe WeasyPrint lui-même l'appelle avant) : cffi charge ces
+bibliothèques par chemin absolu et fontconfig reçoit une configuration minimale vers
+les polices du système (`/System/Library/Fonts`, `/Library/Fonts`, `~/Library/Fonts`).
+Les bibliothèques Homebrew imposent leur propre version minimale de macOS, que le
+qualificateur mesure (« Version minimale de macOS exigée par le bundle ») : la lire
+avant de la promettre aux utilisateurs. GLib, Pango, HarfBuzz, FontConfig et leurs
+dépendances sont sous licences libres propres (LGPL, MIT) : en redistribuant le `.app`,
+joindre leurs notices, à vérifier par le produit.
 L'application minimale `tests/application_minimale` qualifie cette chaîne en CI sur les
 trois systèmes (voir QUALIFICATION.md) ; elle ne remplace pas les bancs des produits.
-Les imports PyObjC listés par l'assembleur n'ont pas été exécutés sur un Mac par
-ce jalon : seule une CI macOS les qualifie, et pas un essai interactif.
+Les imports PyObjC listés par l'assembleur et la fenêtre WKWebView ont été vus verts
+sur le runner macOS arm64 ; ni un Mac réel ni un essai interactif ne les remplacent.
 
 Depuis #SOC3b (0.7.0), `pas_communs.installateur_windows` génère et compile
 l'installateur Inno Setup depuis une configuration JSON du produit. Le modèle
