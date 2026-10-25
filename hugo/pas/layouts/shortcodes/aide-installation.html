@@ -1,0 +1,60 @@
+{{- /* Aide à l'installation des programmes de bureau, pour un public non informaticien.
+Paramètres : nom (produit, requis), dossier (identifiant des données, requis),
+systeme (tous|windows|macos|linux, défaut tous). Ordre : Windows, macOS, Linux. */ -}}
+{{- $nom := .Get "nom" -}}
+{{- if not $nom }}{{ errorf "aide-installation : paramètre nom requis (%s)" .Position }}{{ end -}}
+{{- $dossier := .Get "dossier" -}}
+{{- if not $dossier }}{{ errorf "aide-installation : paramètre dossier requis (%s)" .Position }}{{ end -}}
+{{- $systeme := .Get "systeme" | default "tous" -}}
+{{- if not (in (slice "tous" "windows" "macos" "linux") $systeme) -}}{{ errorf "aide-installation : systeme inconnu %q (%s)" $systeme .Position }}{{- end -}}
+{{- if eq $systeme "tous" -}}
+<nav class="aide-installation-choix" aria-label="Choisir son ordinateur">
+  <p>Quel ordinateur utilisez-vous ?</p>
+  <ul>
+    <li><a href="#installation-windows">Windows</a></li>
+    <li><a href="#installation-macos">Mac (puce Apple)</a></li>
+    <li><a href="#installation-linux">Linux (Ubuntu 24.04)</a></li>
+  </ul>
+</nav>
+{{- end -}}
+{{- if or (eq $systeme "tous") (eq $systeme "windows") }}
+<section class="aide-installation" aria-labelledby="installation-windows">
+  <h2 id="installation-windows">Windows</h2>
+  <ol>
+    <li>Téléchargez l’installateur Windows de {{ $nom }} (fichier se terminant par <code>-x64.exe</code>), puis double-cliquez dessus.</li>
+    <li>Si Windows affiche « Windows a protégé votre ordinateur », cliquez sur <strong>Informations complémentaires</strong>, puis sur <strong>Exécuter quand même</strong>. Ce message apparaît parce que le programme n’est pas encore signé numériquement ; il ne signifie pas qu’il est dangereux.</li>
+    <li>L’installation se fait pour votre compte, sans droits d’administrateur. {{ $nom }} s’ouvre ensuite depuis le menu Démarrer.</li>
+  </ol>
+  <h3>Si la fenêtre reste vide ou ne s’ouvre pas</h3>
+  <p>{{ $nom }} a besoin du composant gratuit de Microsoft « WebView2 », déjà présent sur la plupart des ordinateurs récents. S’il manque, ouvrez la <a href="https://developer.microsoft.com/microsoft-edge/webview2/" rel="external">page de téléchargement de Microsoft</a>, téléchargez « Evergreen Bootstrapper » (ou « Evergreen Standalone Installer » si l’ordinateur n’a pas Internet), lancez-le, puis relancez {{ $nom }}.</p>
+  <h3>Vos données et la désinstallation</h3>
+  <p>Vos données sont conservées hors du programme, dans <code>%LOCALAPPDATA%\{{ $dossier }}\paquet-autonome</code>. Désinstaller {{ $nom }} (Paramètres, Applications) ne les supprime pas.</p>
+</section>
+{{- end }}
+{{- if or (eq $systeme "tous") (eq $systeme "macos") }}
+<section class="aide-installation" aria-labelledby="installation-macos">
+  <h2 id="installation-macos">Mac</h2>
+  <p>Ce programme fonctionne sur les Mac à puce Apple (M1 ou plus récent). Pour le vérifier : menu Pomme, « À propos de ce Mac », ligne « Puce ». Les anciens Mac à processeur Intel ne sont pas pris en charge.</p>
+  <ol>
+    <li>Téléchargez le fichier <code>.dmg</code> de {{ $nom }} et ouvrez-le.</li>
+    <li>Glissez l’icône de {{ $nom }} sur le dossier <strong>Applications</strong>.</li>
+    <li>Ouvrez {{ $nom }} depuis Applications. Au premier lancement, macOS indique qu’il ne peut pas vérifier le programme, car il n’est pas encore signé par Apple.</li>
+    <li>Ouvrez <strong>Réglages Système</strong>, puis <strong>Confidentialité et sécurité</strong>. Descendez jusqu’au message signalant que {{ $nom }} a été bloqué et cliquez sur <strong>Ouvrir quand même</strong>, puis confirmez avec votre mot de passe. Les intitulés peuvent varier selon la version de macOS. Cette étape n’est nécessaire qu’une fois.</li>
+  </ol>
+  <h3>Vos données et la désinstallation</h3>
+  <p>Vos données sont conservées hors du programme, dans <code>~/Library/Application Support/{{ $dossier }}/paquet-autonome</code>. Glisser {{ $nom }} dans la Corbeille le désinstalle sans supprimer ces données.</p>
+</section>
+{{- end }}
+{{- if or (eq $systeme "tous") (eq $systeme "linux") }}
+<section class="aide-installation" aria-labelledby="installation-linux">
+  <h2 id="installation-linux">Linux</h2>
+  <p>Seul Ubuntu 24.04 est qualifié. Les autres distributions peuvent fonctionner, sans garantie.</p>
+  <ol>
+    <li>Dans un terminal, installez les composants de fenêtre : <code>sudo apt install gir1.2-gtk-3.0 gir1.2-webkit2-4.1</code>.</li>
+    <li>Téléchargez l’archive Linux de {{ $nom }} (<code>.tar.gz</code>) et extrayez-la entièrement : clic droit, « Extraire ici ».</li>
+    <li>Ouvrez le dossier extrait et lancez le programme du même nom que {{ $nom }}, sans espaces.</li>
+  </ol>
+  <h3>Vos données et la désinstallation</h3>
+  <p>Vos données sont conservées hors du programme, dans <code>~/.local/share/{{ $dossier }}/paquet-autonome</code>. Supprimer le dossier extrait désinstalle {{ $nom }} sans supprimer ces données.</p>
+</section>
+{{- end }}

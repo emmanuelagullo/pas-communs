@@ -1,0 +1,45 @@
+name: Thème Hugo partagé
+
+# Construit le site d'essai tests/site_exemple avec Hugo Extended 0.140.2 (version du thème),
+# aux URL racine et préfixée, puis contrôle liens, ancres et structure. Aucun produit n'est touché.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  HUGO_VERSION: 0.140.2
+
+jobs:
+  site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Installer Hugo Extended (empreinte vérifiée)
+        run: |
+          set -euo pipefail
+          base="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}"
+          archive="hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/$archive" "$base/$archive"
+          curl -fsSL -o "$RUNNER_TEMP/sommes.txt" "$base/hugo_${HUGO_VERSION}_checksums.txt"
+          (cd "$RUNNER_TEMP" && grep " $archive\$" sommes.txt | sha256sum --check -)
+          mkdir -p "$RUNNER_TEMP/hugo"
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP/hugo" hugo
+          echo "$RUNNER_TEMP/hugo" >> "$GITHUB_PATH"
+      - name: Construire et contrôler le site d'essai
+        env:
+          PAS_COMMUNS_HUGO_OBLIGATOIRE: '1'
+        run: |
+          hugo version
+          python -m unittest discover -s tests -p test_hugo.py -v

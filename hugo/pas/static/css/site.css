@@ -154,3 +154,7 @@ nav a { min-height: 24px; padding-block: 4px; }
 .footer-grid nav { gap: 6px 16px; }
 pre { max-width: 100%; overflow-x: auto; }
 @media (max-width: 480px) { .shell { width: calc(100% - 32px); } .page { padding-block: 42px 64px; } }
+.aide-installation { margin: 28px 0; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+.aide-installation h2 { margin-top: 0; }
+.aide-installation h3 { margin: 22px 0 8px; font: 750 1rem/1.3 system-ui, sans-serif; letter-spacing: 0; }
+.aide-installation-choix ul { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; list-style: none; }

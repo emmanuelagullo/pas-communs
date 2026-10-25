@@ -1,0 +1,18 @@
+baseURL = "https://example.invalid/produit/"
+languageCode = "fr"
+title = "Site d'essai du thème partagé"
+theme = "pas"
+themesDir = "../../hugo"
+
+[[menus.main]]
+name = "Accueil"
+pageRef = "/"
+weight = 1
+
+[[menus.main]]
+name = "Télécharger"
+pageRef = "/telechargements"
+weight = 2
+
+[params]
+projectPath = "/projet/"
