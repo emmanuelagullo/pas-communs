@@ -28,6 +28,8 @@ class ApplicationMinimaleTests(unittest.TestCase):
     def test_version_et_verification_de_distribution(self):
         self.assertEqual(self.executer("--version").strip(), pas_communs.__version__)
         self.assertIn("Distribution vérifiée", self.executer("--verifier-distribution"))
+        # Le banc d'installation Windows relit cette version dans le programme installé.
+        self.assertEqual((FIXTURE / "version-application.txt").read_text(encoding="utf-8").strip(), "dev")
 
     def test_donnees_hors_du_programme_selon_le_systeme(self):
         with tempfile.TemporaryDirectory() as t:

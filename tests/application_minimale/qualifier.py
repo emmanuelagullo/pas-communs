@@ -143,6 +143,8 @@ def main():
                         with etape("Architecture et signature ad hoc (informatif)", obligatoire=False, strict=a.strict):
                             print(subprocess.run(["lipo", "-archs", str(programme)], check=True, capture_output=True, text=True).stdout)
                             subprocess.run(["codesign", "--verify", "--verbose=1", str(dossier)], check=True, capture_output=True, text=True)
+                    with etape("Moteur de fenêtre détecté (informatif)", obligatoire=False, strict=a.strict):
+                        print(lancer(programme, "--verifier-moteur", env=dict(os.environ)))
                     if a.avec_pdf and cible != "windows":
                         with etape("PDF natif (informatif)", obligatoire=False, strict=a.strict):
                             print(lancer(programme, "--verifier-pdf", env=dict(os.environ)))

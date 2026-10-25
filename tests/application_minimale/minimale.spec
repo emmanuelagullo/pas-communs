@@ -8,7 +8,8 @@ from pas_communs.construction import assembler
 # ne sont collectées que si PAS_COMMUNS_PANGO_BIN est défini (profil PDF non qualifié ici).
 assembler(
     SPECPATH, globals(), nom="PasCommunsMinimale", settings="minimale.reglages",
-    ressources=[("minimale/ressources", "minimale/ressources")], paquets=["minimale"],
+    ressources=[("minimale/ressources", "minimale/ressources"), ("version-application.txt", ".")],
+    paquets=["minimale"],
     imports=["weasyprint"] if importlib.util.find_spec("weasyprint") else [],
     pango_variable="PAS_COMMUNS_PANGO_BIN" if os.environ.get("PAS_COMMUNS_PANGO_BIN") else None,
     bundle_identifiant="fr.inria.pascommuns.minimale",

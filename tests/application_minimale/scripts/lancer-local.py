@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.request import urlopen
 
 import pas_communs
-from pas_communs import local
+from pas_communs import local, moteur
 from pas_communs.plateforme import systeme
 from minimale.application import RESSOURCES, application
 from minimale.reglages import NOM_APPLICATION, NOM_BASE
@@ -49,6 +49,13 @@ def verifier_distribution():
     print("Distribution vérifiée : " + pas_communs.__version__)
 
 
+def verifier_moteur():
+    """Sonde du moteur de fenêtre : échoue si le composant système semble absent."""
+    if not moteur.signaler_moteur(NOM_APPLICATION, notifier=lambda message: print(message, file=sys.stderr)):
+        raise SystemExit(1)
+    print("Moteur de fenêtre détecté.")
+
+
 def verifier_pdf():
     from pas_communs import pdf
     recuperer = pdf.recuperateur_medias([], schema="media:", ouvrir=open)
@@ -75,6 +82,8 @@ def temoin(paquet, action):
 
 def ouvrir(serveur, delai):
     import webview
+    # Indice seulement : la fenêtre est tentée même si la sonde se trompe.
+    moteur.signaler_moteur(NOM_APPLICATION, notifier=lambda message: print(message, file=sys.stderr))
     fenetre = local.creer_fenetre("Pas communs — application minimale", serveur.url)
     chargee = threading.Event()
     fenetre.events.loaded += chargee.set
@@ -106,6 +115,7 @@ def main(argv=None):
     p.add_argument("--version", action="store_true")
     p.add_argument("--verifier-distribution", action="store_true")
     p.add_argument("--verifier-pdf", action="store_true")
+    p.add_argument("--verifier-moteur", action="store_true")
     p.add_argument("--chemin-donnees", action="store_true")
     p.add_argument("--temoin", choices=("ecrire", "lire"))
     p.add_argument("--sans-fenetre", action="store_true")
@@ -119,6 +129,8 @@ def main(argv=None):
         verifier_distribution()
     elif a.verifier_pdf:
         verifier_pdf()
+    elif a.verifier_moteur:
+        verifier_moteur()
     elif a.chemin_donnees:
         print(paquet)
     elif a.temoin:
