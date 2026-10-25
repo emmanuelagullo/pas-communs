@@ -112,3 +112,10 @@ Après qualification (CI du socle, puis un banc de construction macOS), publier
 le tag 0.10.0 sur les deux forges et promouvoir le wheel exact vérifié. Les
 produits n'ont rien à changer pour Windows et Linux ; l'ajout de macOS dans
 leurs workflows et leurs sites est une décision propre à chaque produit.
+
+## Candidat 0.10.1 — alerte de démarrage et nom affiché macOS
+
+Ce patch prépare une nouvelle version ; il ne publie rien. 0.10.0 reste immuable. Après
+qualification (CI du socle et application minimale), publier le tag 0.10.1 sur les deux forges
+et promouvoir le wheel exact vérifié. Les produits gardent leur wheel adopté jusqu'à leur propre
+adoption explicite.

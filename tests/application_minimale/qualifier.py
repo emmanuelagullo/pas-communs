@@ -18,7 +18,7 @@ import tempfile
 import zipfile
 
 import pas_communs
-from pas_communs import construire_bureau, installateur_windows
+from pas_communs import construire_bureau, installateur_windows, notification
 from pas_communs.plateforme import systeme
 
 ICI = Path(__file__).resolve().parent
@@ -196,6 +196,12 @@ def main():
                         with etape("Architecture et signature ad hoc (informatif)", obligatoire=False, strict=a.strict):
                             print(subprocess.run(["lipo", "-archs", str(programme)], check=True, capture_output=True, text=True).stdout)
                             subprocess.run(["codesign", "--verify", "--verbose=1", str(dossier)], check=True, capture_output=True, text=True)
+                        with etape("Alerte de démarrage : script AppleScript compilable (informatif)",
+                                   obligatoire=False, strict=a.strict) as info:
+                            piege = 'Guillemets "ici", barre \\ inverse, accents é è ’ et\nsaut de ligne'
+                            subprocess.run(["osacompile", "-e", notification.script_alerte("Pas communs minimale", piege),
+                                "-o", str(temporaire / "alerte.scpt")], check=True, capture_output=True, text=True)
+                            info["detail"] = "texte piégé compilé par osacompile"
                         fichiers = binaires_mach_o(dossier)
                         with etape("Autonomie : aucune dépendance hors du système ni du bundle (informatif)",
                                    obligatoire=False, strict=a.strict) as info:

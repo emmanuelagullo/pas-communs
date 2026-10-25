@@ -47,6 +47,16 @@ une archive : ZIP Windows (`NOM-windows.zip`), tar.gz Linux (`NOM-linux.tar.gz`)
 ou image disque macOS (`NOM-macos-arm64.dmg`). Une erreur de vérification
 interdit la création de la nouvelle archive. Construire sur le système cible.
 
+## Erreur de démarrage sous macOS (#SOC3f)
+
+Un `.app` n'a pas de console. `pas_communs.notification.notifier_macos("Produit")` retourne
+le `notifier` à passer à `demarrer_avec_journal` : une alerte macOS (`osascript`) indique où est
+le journal. Si `osascript` est absent, le message va sur la sortie d'erreur ; l'erreur d'origine
+n'est jamais masquée. Le qualificateur compile sous macOS un script construit avec un texte
+piégé (guillemets, barre oblique inverse, accents, saut de ligne). `assembler` accepte aussi
+`nom_affiche` (par exemple « Petits Pas ») : nom montré par macOS, alors que le fichier reste
+`NOM.app` sans espace.
+
 ## Moteur de fenêtre absent (#SOC3c)
 
 `pas_communs.moteur` sonde le composant système et fournit un message en français,
