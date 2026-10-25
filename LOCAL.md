@@ -90,7 +90,11 @@ bibliothèques par chemin absolu et fontconfig reçoit une configuration minimal
 les polices du système (`/System/Library/Fonts`, `/Library/Fonts`, `~/Library/Fonts`).
 Les bibliothèques Homebrew imposent leur propre version minimale de macOS, que le
 qualificateur mesure (« Version minimale de macOS exigée par le bundle ») : la lire
-avant de la promettre aux utilisateurs. GLib, Pango, HarfBuzz, FontConfig et leurs
+avant de la promettre aux utilisateurs. Mesure du 25 octobre 2026 sur le runner
+`macos-15` : **macOS 15.0 ou plus**, imposé par la dylib libthai de Homebrew. Les
+runners plus anciens ne sont plus disponibles (macOS 14 retiré le 2 novembre 2026) :
+abaisser cette exigence supposerait de construire ces bibliothèques autrement. Le
+shortcode d'aide affiche 15 par défaut (`macos_min`). GLib, Pango, HarfBuzz, FontConfig et leurs
 dépendances sont sous licences libres propres (LGPL, MIT) : en redistribuant le `.app`,
 joindre leurs notices, à vérifier par le produit.
 L'application minimale `tests/application_minimale` qualifie cette chaîne en CI sur les

@@ -1,12 +1,13 @@
 {{- /* Aide à l'installation des programmes de bureau, pour un public non informaticien.
 Paramètres : nom (produit, requis), dossier (identifiant des données, requis),
 systeme (tous|windows|macos|linux, défaut tous), macos_min (version minimale de macOS,
-facultatif, ex. 15). Ordre : Windows, macOS, Linux. */ -}}
+défaut 15, mesurée par la qualification du socle). Ordre : Windows, macOS, Linux. */ -}}
 {{- $nom := .Get "nom" -}}
 {{- if not $nom }}{{ errorf "aide-installation : paramètre nom requis (%s)" .Position }}{{ end -}}
 {{- $dossier := .Get "dossier" -}}
 {{- if not $dossier }}{{ errorf "aide-installation : paramètre dossier requis (%s)" .Position }}{{ end -}}
 {{- $systeme := .Get "systeme" | default "tous" -}}
+{{- $macosMin := .Get "macos_min" | default "15" -}}
 {{- if not (in (slice "tous" "windows" "macos" "linux") $systeme) -}}{{ errorf "aide-installation : systeme inconnu %q (%s)" $systeme .Position }}{{- end -}}
 {{- if eq $systeme "tous" -}}
 <nav class="aide-installation-choix" aria-label="Choisir son ordinateur">
@@ -35,7 +36,7 @@ facultatif, ex. 15). Ordre : Windows, macOS, Linux. */ -}}
 {{- if or (eq $systeme "tous") (eq $systeme "macos") }}
 <section class="aide-installation" aria-labelledby="installation-macos">
   <h2 id="installation-macos">Mac</h2>
-  <p>Ce programme fonctionne sur les Mac à puce Apple (M1 ou plus récent). Pour le vérifier : menu Pomme, « À propos de ce Mac », ligne « Puce ». Les anciens Mac à processeur Intel ne sont pas pris en charge.{{ with .Get "macos_min" }} macOS {{ . }} ou plus récent est nécessaire.{{ end }}</p>
+  <p>Ce programme fonctionne sur les Mac à puce Apple (M1 ou plus récent). Pour le vérifier : menu Pomme, « À propos de ce Mac », ligne « Puce ». Les anciens Mac à processeur Intel ne sont pas pris en charge. macOS {{ $macosMin }} ou plus récent est nécessaire : si besoin, installez la mise à jour dans Réglages Système, Général, Mise à jour de logiciels.</p>
   <ol>
     <li>Téléchargez le fichier <code>.dmg</code> de {{ $nom }} et ouvrez-le.</li>
     <li>Glissez l’icône de {{ $nom }} sur le dossier <strong>Applications</strong>.</li>

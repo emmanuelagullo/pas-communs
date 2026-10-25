@@ -46,7 +46,8 @@ Aide à l'installation des programmes de bureau : le shortcode
 trois systèmes pour un public non informaticien, dans l'ordre Windows, macOS puis
 Linux (`systeme="windows"`, `"macos"` ou `"linux"` pour un seul). Il donne
 l'avertissement SmartScreen, WebView2 absent, la procédure « Ouvrir quand même »
-de macOS, les paquets Ubuntu, l'emplacement des données et la désinstallation. Les
+de macOS, les paquets Ubuntu, la version minimale de macOS (`macos_min`, 15 par défaut, mesurée par
+la qualification), l'emplacement des données et la désinstallation. Les
 noms de fichiers à télécharger et les liens restent dans le catalogue du produit,
 qui encadre le shortcode. Le texte dit l'état réel : programmes non signés, macOS
 sur puce Apple seulement, Ubuntu 24.04 seul qualifié. Si cet état change, modifier
