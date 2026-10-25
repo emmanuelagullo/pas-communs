@@ -91,6 +91,12 @@ class ConstructionTests(unittest.TestCase):
         self.assertNotIn("webview.platforms.winforms", imports)
         self.assertEqual(appels["Analysis"][1]["binaries"], [])
 
+    def test_macos_nom_affiche_avec_espace_et_repli_sur_le_nom(self):
+        _, appels = self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif", nom_affiche="Application fictive")
+        self.assertEqual(appels["BUNDLE"][1]["info_plist"]["CFBundleDisplayName"], "Application fictive")
+        _, appels = self.assembler_fictif("darwin", bundle_identifiant="fr.inria.fictif")
+        self.assertEqual(appels["BUNDLE"][1]["info_plist"]["CFBundleDisplayName"], "ApplicationFictive")
+
     def test_macos_refuse_un_identifiant_de_bundle_absent_ou_invalide(self):
         for identifiant in (None, "", "sansPoint", ".fr.inria", "fr.inria.", "fr.inria.é", "fr inria.fictif"):
             with self.subTest(identifiant=identifiant), self.assertRaises(ValueError):

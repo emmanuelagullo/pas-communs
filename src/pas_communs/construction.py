@@ -16,7 +16,7 @@ def _verifier_identifiant_bundle(identifiant):
 def assembler(racine, espace, *, nom, settings, ressources, paquets,
               imports=(), entree="scripts/lancer-local.py", pango_variable=None,
               paquets_ressources=(), exclusions=(), plateforme=None,
-              bundle_identifiant=None):
+              bundle_identifiant=None, nom_affiche=None):
     from PyInstaller.utils.hooks import collect_data_files, collect_submodules
     cible = systeme(plateforme, strict=True)
     if cible == "macos":
@@ -97,4 +97,5 @@ def assembler(racine, espace, *, nom, settings, ressources, paquets,
         return collecte
     # Le dossier PyInstaller est conservé : le .app l'embarque, sans binaire monolithique.
     return espace["BUNDLE"](collecte, name=nom + ".app", bundle_identifier=bundle_identifiant,
-        info_plist={"CFBundleName": nom, "NSHighResolutionCapable": True})
+        info_plist={"CFBundleName": nom, "CFBundleDisplayName": nom_affiche or nom,
+                    "NSHighResolutionCapable": True})
