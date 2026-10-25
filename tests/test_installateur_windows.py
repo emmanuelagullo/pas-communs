@@ -28,6 +28,11 @@ class InstallateurTests(unittest.TestCase):
             self.assertIn('WizardSilent',texte)
             self.assertNotIn('[UninstallDelete]',texte.split('[Languages]')[1])
             self.assertNotIn('@@',texte)
+            # Avertissement WebView2 : jamais en silencieux (le banc CI installe en /VERYSILENT).
+            code=texte.split('[Code]')[1]
+            self.assertIn('CurStepChanged',code)
+            self.assertIn('(not WizardSilent) and (not WebView2Detecte)',code)
+            self.assertIn('{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}',code)
             self.assertEqual(setup.name,'PetitsPas-Setup-dev.1234abcd-x64.exe')
             self.assertTrue((w.RESSOURCES/'verifier-windows.ps1').is_file())
             c['nom']="Pas d'essai";f.write_text(json.dumps(c),encoding='utf-8')
