@@ -126,6 +126,9 @@ jamais par os.name. macOS est livré en arm64 seulement, non signé ; ne pas
 inventer de bundle_identifiant par défaut ni ajouter Intel, universal2 ou
 Windows ARM64 sans besoin explicite. Ne pas annoncer le PDF natif macOS avant
 sa qualification. Les noms historiques des archives Windows et Linux sont inchangés.
+Le message de moteur absent (pas_communs.moteur) et le shortcode aide-installation
+décrivent l'état réel des programmes (non signés, macOS arm64, Ubuntu 24.04) : les
+mettre à jour ensemble si cet état change, avant d'avancer un gitlink Hugo.
 tests/application_minimale se construit depuis le wheel installé, jamais depuis src/ ;
 ne pas y mettre de métier ni la promouvoir en produit. Ses étapes informatives et le
 job macOS ne deviennent bloquants que par décision explicite.

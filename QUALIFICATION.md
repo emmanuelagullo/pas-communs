@@ -73,6 +73,10 @@ et macOS arm64 ; `qualification-publication.yml` le rejoue après la publication
 d'un tag sur le wheel téléchargé de la release, empreinte vérifiée. Ce second test
 qualifie les octets de la release, pas leur transfert vers GitLab Inria.
 
+L'application minimale embarque `version-application.txt` (valeur `dev`) : le banc
+d'installation Windows relit cette version dans le programme installé. Le shortcode
+d'aide à l'installation est construit par `theme-hugo.yml` (voir HUGO.md).
+
 Limites à retenir. La fenêtre réelle (Linux sous Xvfb, macOS, Windows), le PDF
 natif et l'installateur Windows sont informatifs jusqu'à avoir été vus verts en
 CI. Le job macOS est non bloquant pour la même raison ; le rendre bloquant

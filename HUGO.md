@@ -41,6 +41,18 @@ La recherche prend `params.guidePlaceholder`. La couleur des métadonnées prend
 redéfinit les variables `--accent`, `--accent-dark`, `--ink`, `--muted`,
 `--paper`, `--cream`, `--sun`, `--line` et `--tint` au besoin.
 
+Aide à l'installation des programmes de bureau : le shortcode
+`{{< aide-installation nom="Produit" dossier="identifiant-donnees" >}}` rend les
+trois systèmes pour un public non informaticien, dans l'ordre Windows, macOS puis
+Linux (`systeme="windows"`, `"macos"` ou `"linux"` pour un seul). Il donne
+l'avertissement SmartScreen, WebView2 absent, la procédure « Ouvrir quand même »
+de macOS, les paquets Ubuntu, l'emplacement des données et la désinstallation. Les
+noms de fichiers à télécharger et les liens restent dans le catalogue du produit,
+qui encadre le shortcode. Le texte dit l'état réel : programmes non signés, macOS
+sur puce Apple seulement, Ubuntu 24.04 seul qualifié. Si cet état change, modifier
+le shortcode avant d'avancer les gitlinks. `tests/site_exemple` construit ce thème
+en CI (`theme-hugo.yml`) ; aucun produit n'est touché tant que son gitlink n'avance pas.
+
 Navigation principale : `menus.main` ; liens complémentaires : `menus.footer`.
 Employer `pageRef` pour les pages internes, ce qui conserve aria-current dans
 les sous-rubriques. `params.projectPath` désigne la page projet depuis la 404.

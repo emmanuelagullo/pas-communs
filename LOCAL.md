@@ -47,6 +47,18 @@ une archive : ZIP Windows (`NOM-windows.zip`), tar.gz Linux (`NOM-linux.tar.gz`)
 ou image disque macOS (`NOM-macos-arm64.dmg`). Une erreur de vérification
 interdit la création de la nouvelle archive. Construire sur le système cible.
 
+## Moteur de fenêtre absent (#SOC3c)
+
+`pas_communs.moteur` sonde le composant système et fournit un message en français,
+sans jargon : WebView2 sous Windows (clé `pv` documentée par Microsoft), GTK 3 et
+WebKitGTK 4.1 sous Linux, WebKit sous macOS. `signaler_moteur(nom, notifier=...)`
+notifie sans jamais bloquer : une clé de registre absente n'interdit pas toujours
+l'ouverture de la fenêtre, et un produit ne doit pas empêcher un démarrage possible.
+Chaque produit appelle `signaler_moteur` avant `creer_fenetre` et affiche le message
+dans sa fenêtre d'erreur ; ce branchement relève du produit, non fait ici. L'installateur
+Windows signale aussi un WebView2 non détecté en fin d'installation, jamais en mode
+silencieux.
+
 ## macOS (#SOC3c)
 
 Cibles livrées : Windows x64, Linux x86_64 (Ubuntu 24.04) et **macOS arm64
