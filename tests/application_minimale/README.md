@@ -18,7 +18,9 @@ construction et `--verifier-distribution` du programme gelé, l'extraction de
 l'archive (zip, tar.gz ou DMG copié), la version embarquée, le dossier de données
 hors du programme et la persistance d'un témoin entre deux lancements. Sont
 **informatifs** (`--strict` les rend bloquants) : `--avec-fenetre` (vraie fenêtre
-PyWebView), `--avec-pdf` (WeasyPrint), sonde du moteur de fenêtre, signature ad hoc macOS et, sous Windows,
+PyWebView), `--avec-pdf` (WeasyPrint ; sous macOS avec `--isoler-homebrew` et `PAS_COMMUNS_PANGO_BIN`
+vers les dylibs), sonde du moteur de fenêtre, signature, autonomie des dylibs et version
+minimale de macOS (macOS), et, sous Windows,
 `--avec-installateur`.
 
 Linux exige PyGObject, GTK et WebKitGTK 4.1 d'Ubuntu : utiliser le Python du

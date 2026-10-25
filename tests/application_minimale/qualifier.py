@@ -33,8 +33,9 @@ class Echec(Exception):
 @contextmanager
 def etape(titre, *, obligatoire=True, strict=False):
     print("::group::" + titre, flush=True)
+    info = {}
     try:
-        yield
+        yield info
     except BaseException as exc:
         if isinstance(exc, KeyboardInterrupt):
             raise
@@ -44,7 +45,7 @@ def etape(titre, *, obligatoire=True, strict=False):
         RESULTATS.append((titre, "ÉCHEC" if bloquant else "avertissement", detail, bloquant))
         print(("::error::" if bloquant else "::warning::") + titre + " : " + detail, flush=True)
     else:
-        RESULTATS.append((titre, "ok", "", False))
+        RESULTATS.append((titre, "ok", info.get("detail", ""), False))
     finally:
         print("::endgroup::", flush=True)
 
@@ -86,6 +87,56 @@ def extraire(archive, cible, temporaire):
             subprocess.run(["hdiutil", "detach", str(montage), "-force"], capture_output=True)
 
 
+MAGIES_MACH_O = (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
+
+
+def binaires_mach_o(dossier):
+    trouves = []
+    for chemin in sorted(Path(dossier).rglob("*")):
+        if chemin.is_file() and not chemin.is_symlink():
+            with chemin.open("rb") as f:
+                if f.read(4) in MAGIES_MACH_O:
+                    trouves.append(chemin)
+    return trouves
+
+
+def dependances_hors_systeme(fichier):
+    """Dépendances d'un Mach-O qui ne viennent ni du système ni du bundle (@loader_path, @rpath...)."""
+    sortie = subprocess.run(["otool", "-L", str(fichier)], check=True, capture_output=True, text=True).stdout
+    chemins = [ligne.strip().split(" (")[0] for ligne in sortie.splitlines()[1:] if ligne.strip()]
+    return [c for c in chemins if not c.startswith(("/usr/lib/", "/System/Library/", "@"))]
+
+
+def version_minimale(fichier):
+    """Plus haute version minimale de macOS exigée par un Mach-O, comme tuple (ex. (15, 0))."""
+    sortie = subprocess.run(["otool", "-l", str(fichier)], check=True, capture_output=True, text=True).stdout
+    versions, attente = [], None
+    for ligne in sortie.splitlines():
+        mots = ligne.split()
+        if len(mots) == 2 and mots[0] == "cmd":
+            attente = {"LC_BUILD_VERSION": "minos", "LC_VERSION_MIN_MACOSX": "version"}.get(mots[1])
+        elif attente and len(mots) == 2 and mots[0] == attente:
+            versions.append(tuple(int(x) for x in mots[1].split(".") if x.isdigit()))
+            attente = None
+    return max(versions, default=(0,))
+
+
+@contextmanager
+def homebrew_masque():
+    """Retire /opt/homebrew le temps d'une sonde : le programme doit se suffire à lui-même."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        raise Echec("--isoler-homebrew exige un runner CI jetable.")
+    prefixe, masque = Path("/opt/homebrew"), Path("/opt/homebrew-masque")
+    if not prefixe.is_dir():
+        yield
+        return
+    subprocess.run(["sudo", "mv", str(prefixe), str(masque)], check=True)
+    try:
+        yield
+    finally:
+        subprocess.run(["sudo", "mv", str(masque), str(prefixe)], check=True)
+
+
 def ecrire_resume():
     lignes = ["## Qualification de l'application minimale (" + systeme() + ", " + platform.machine() + ")", "",
         "Socle : pas-communs " + pas_communs.__version__, "", "| Étape | Résultat | Détail |", "|---|---|---|"]
@@ -103,6 +154,8 @@ def main():
     p.add_argument("--avec-fenetre", action="store_true", help="Ouvrir la vraie fenêtre PyWebView.")
     p.add_argument("--avec-pdf", action="store_true", help="Sonde PDF natif (WeasyPrint).")
     p.add_argument("--avec-installateur", action="store_true", help="Installateur Windows et son banc.")
+    p.add_argument("--isoler-homebrew", action="store_true",
+                   help="macOS, CI seulement : masquer /opt/homebrew pendant la sonde PDF.")
     p.add_argument("--strict", action="store_true", help="Les étapes informatives deviennent bloquantes.")
     a = p.parse_args()
     cible = systeme(strict=True)
@@ -143,11 +196,30 @@ def main():
                         with etape("Architecture et signature ad hoc (informatif)", obligatoire=False, strict=a.strict):
                             print(subprocess.run(["lipo", "-archs", str(programme)], check=True, capture_output=True, text=True).stdout)
                             subprocess.run(["codesign", "--verify", "--verbose=1", str(dossier)], check=True, capture_output=True, text=True)
+                        fichiers = binaires_mach_o(dossier)
+                        with etape("Autonomie : aucune dépendance hors du système ni du bundle (informatif)",
+                                   obligatoire=False, strict=a.strict) as info:
+                            externes = {f.name: dependances_hors_systeme(f) for f in fichiers}
+                            externes = {nom: deps for nom, deps in externes.items() if deps}
+                            if externes:
+                                nom, deps = next(iter(externes.items()))
+                                raise Echec(f"{len(externes)} fichier(s) dépendent d'un chemin externe, ex. {nom} : {deps[0]}")
+                            info["detail"] = f"{len(fichiers)} fichiers Mach-O vérifiés"
+                        with etape("Version minimale de macOS exigée par le bundle (informatif)",
+                                   obligatoire=False, strict=a.strict) as info:
+                            exigences = sorted(((version_minimale(f), f.name) for f in fichiers), reverse=True)
+                            version, nom = exigences[0]
+                            info["detail"] = "macOS " + ".".join(map(str, version)) + " ou plus, imposé par " + nom
                     with etape("Moteur de fenêtre détecté (informatif)", obligatoire=False, strict=a.strict):
                         print(lancer(programme, "--verifier-moteur", env=dict(os.environ)))
                     if a.avec_pdf and cible != "windows":
-                        with etape("PDF natif (informatif)", obligatoire=False, strict=a.strict):
-                            print(lancer(programme, "--verifier-pdf", env=dict(os.environ)))
+                        with etape("PDF natif (informatif)", obligatoire=False, strict=a.strict) as info:
+                            if a.isoler_homebrew and cible == "macos":
+                                with homebrew_masque():
+                                    print(lancer(programme, "--verifier-pdf", env=dict(os.environ)))
+                                info["detail"] = "Homebrew masqué pendant la sonde"
+                            else:
+                                print(lancer(programme, "--verifier-pdf", env=dict(os.environ)))
                     if a.avec_fenetre:
                         with etape("Fenêtre PyWebView réelle (informatif)", obligatoire=False, strict=a.strict):
                             prefixe = ("xvfb-run", "-a") if cible == "linux" and not os.environ.get("DISPLAY") else ()

@@ -5,10 +5,12 @@ ouvre la vraie fenêtre PyWebView, attend le chargement de la page puis la ferme
 """
 import argparse
 import json
+import re
 import sqlite3
 import sys
 import tempfile
 import threading
+import zlib
 from contextlib import closing
 from pathlib import Path
 from urllib.request import urlopen
@@ -56,14 +58,33 @@ def verifier_moteur():
     print("Moteur de fenêtre détecté.")
 
 
+def contenu_pdf(octets):
+    """Le PDF et ses flux décompressés : WeasyPrint range les polices dans des flux Flate."""
+    tout = octets
+    for flux in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", octets, re.S):
+        try:
+            tout += zlib.decompress(flux.group(1))
+        except zlib.error:
+            pass
+    return tout
+
+
 def verifier_pdf():
+    import warnings
     from pas_communs import pdf
     recuperer = pdf.recuperateur_medias([], schema="media:", ouvrir=open)
-    octets = pdf.rendre_html("<p>Sonde PDF</p>", base_url=str(RESSOURCES),
-                             feuille_style=str(RESSOURCES / "style.css"), recuperer=recuperer)
+    with warnings.catch_warnings(record=True) as avertissements:
+        warnings.simplefilter("always")
+        octets = pdf.rendre_html("<p>Sonde PDF</p>", base_url=str(RESSOURCES),
+                                 feuille_style=str(RESSOURCES / "style.css"), recuperer=recuperer)
+    polices = [str(a.message) for a in avertissements if "fontconfig" in str(a.message).lower()]
+    if polices:
+        raise RuntimeError("Polices introuvables : " + polices[0])
     if not octets.startswith(b"%PDF"):
         raise RuntimeError("WeasyPrint n'a pas produit de PDF.")
-    print("PDF natif vérifié : %d octets" % len(octets))
+    if b"/FontFile" not in contenu_pdf(octets):
+        raise RuntimeError("Aucune police n'a été embarquée dans le PDF.")
+    print("PDF natif vérifié : %d octets, police embarquée" % len(octets))
 
 
 def temoin(paquet, action):

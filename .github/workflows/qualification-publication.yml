@@ -52,7 +52,7 @@ jobs:
           - {nom: Windows x64, os: windows-2025, experimental: false, pdf: 'false',
              options: '--avec-installateur'}
           - {nom: macOS arm64, os: macos-15, experimental: true, pdf: 'true',
-             options: '--avec-fenetre --avec-pdf'}
+             options: '--avec-fenetre --avec-pdf --isoler-homebrew', pango: /opt/homebrew/lib}
     defaults:
       run:
         shell: bash
@@ -95,6 +95,7 @@ jobs:
       - name: Qualifier l'application minimale
         env:
           TAG: ${{ needs.cible.outputs.tag }}
+          PAS_COMMUNS_PANGO_BIN: ${{ matrix.pango }}
         run: python tests/application_minimale/qualifier.py --version-attendue "$TAG" ${{ matrix.options }}
       - uses: actions/upload-artifact@v6
         if: always()
