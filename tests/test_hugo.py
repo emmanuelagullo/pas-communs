@@ -37,10 +37,23 @@ class ThemeHugoTests(unittest.TestCase):
             for attendu in ("Exécuter quand même", "Ouvrir quand même", "produit-essai", "WebView2",
                             "gir1.2-webkit2-4.1", "Mac à puce Apple"):
                 self.assertIn(attendu, page)
+            self.assertNotIn("ou plus récent est nécessaire", page)
             seul = (Path(sortie) / "windows/index.html").read_text(encoding="utf-8")
             self.assertIn("installation-windows", seul)
             self.assertNotIn("Ouvrir quand même", seul)
             self.assertNotIn("gir1.2-webkit2-4.1", seul)
+
+    def test_version_minimale_de_macos_facultative(self):
+        with tempfile.TemporaryDirectory() as t:
+            copie = Path(t) / "site"
+            shutil.copytree(SITE, copie)
+            (copie / "hugo.toml").write_text((SITE / "hugo.toml").read_text(encoding="utf-8")
+                .replace('themesDir = "../../hugo"', 'themesDir = "' + (RACINE / "hugo").as_posix() + '"'), encoding="utf-8")
+            (copie / "content/telechargements.md").write_text(
+                "---\ntitle: Essai\n---\n\n{{< aide-installation nom=\"X\" dossier=\"x\" macos_min=\"15\" >}}\n", encoding="utf-8")
+            self.assertEqual(self.construire(Path(t) / "public", "https://example.invalid/", source=copie).returncode, 0)
+            page = (Path(t) / "public/telechargements/index.html").read_text(encoding="utf-8")
+            self.assertIn("macOS 15 ou plus récent est nécessaire", page)
 
     def test_parametres_requis_et_systeme_inconnu_refuses(self):
         with tempfile.TemporaryDirectory() as t:
