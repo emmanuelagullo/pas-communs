@@ -21,6 +21,15 @@ def bibliotheques_homebrew(dossier):
 
 
 class FichiersAEmbarquerTests(unittest.TestCase):
+    def test_la_bibliotheque_d_allegement_des_polices_n_est_pas_embarquee(self):
+        noms = {demande for demande, _ in pango_macos.BIBLIOTHEQUES} | {reel for _, reel in pango_macos.BIBLIOTHEQUES}
+        self.assertNotIn(pango_macos.BIBLIOTHEQUE_IGNOREE, noms)
+        self.assertEqual(len(pango_macos.BIBLIOTHEQUES), 5)
+
+    def test_images_chargees_ne_plante_pas_hors_de_macos(self):
+        images = pango_macos._images_chargees()
+        self.assertIsInstance(images, list)
+
     def test_liens_resolus_vers_les_fichiers_reels(self):
         with tempfile.TemporaryDirectory() as t:
             dossier = Path(t).resolve()
@@ -77,6 +86,21 @@ class PreparationAuLancementTests(unittest.TestCase):
         ffi.dlopen("libpango-1.0-0")  # nom absent du bundle : transmis tel quel, WeasyPrint essaie le suivant
         self.assertEqual(self.appels, [(str(self.racine / "libpango-1.0.0.dylib"), 2),
             (str(self.racine / "libgobject-2.0.0.dylib"), 0), ("libpango-1.0-0", 0)])
+
+    def test_reutilise_l_image_deja_chargee_plutot_que_la_copie_du_bundle(self):
+        """Pillow embarque son HarfBuzz : Pango y est rattaché, WeasyPrint doit utiliser le même."""
+        self.assertTrue(self.preparer())
+        deja = "/app/Frameworks/PIL/__dot__dylibs/libharfbuzz.0.dylib"
+        with patch.object(pango_macos, "_images_chargees", return_value=["/usr/lib/libSystem.B.dylib", deja]):
+            cffi.FFI().dlopen("libharfbuzz.0.dylib")
+            cffi.FFI().dlopen("libpango-1.0.dylib")  # pas encore chargée : copie du bundle
+        self.assertEqual(self.appels, [(deja, 0), (str(self.racine / "libpango-1.0.0.dylib"), 0)])
+
+    def test_bibliotheque_d_allegement_des_polices_refusee(self):
+        self.assertTrue(self.preparer())
+        with self.assertRaises(OSError):
+            cffi.FFI().dlopen("libharfbuzz-subset.0.dylib")
+        self.assertEqual(self.appels, [])  # jamais transmise à dlopen : WeasyPrint passe par fontTools
 
     def test_configuration_fontconfig_vers_les_polices_du_systeme(self):
         self.assertTrue(self.preparer())

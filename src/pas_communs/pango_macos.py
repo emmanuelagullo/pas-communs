@@ -1,9 +1,16 @@
 """PDF natif sous macOS : embarquer Pango dans le .app et le faire charger à WeasyPrint.
 
 macOS ne cherche pas les bibliothèques par nom hors de /usr/lib, et un Mac d'utilisateur n'a pas
-Homebrew. À la construction, les six bibliothèques que WeasyPrint charge sont copiées dans le
+Homebrew. À la construction, les cinq bibliothèques que WeasyPrint charge sont copiées dans le
 bundle (PyInstaller y ajoute leurs dépendances et réécrit leurs chemins) ; au lancement, cffi
 reçoit leur chemin absolu et fontconfig une configuration minimale vers les polices du système.
+
+Une seule copie de chaque bibliothèque doit vivre dans le processus. PyInstaller identifie les
+dylibs par leur nom : si un autre paquet en embarque une du même nom (Pillow embarque HarfBuzz,
+FreeType et libpng), Pango est rattaché à celle-là. WeasyPrint reçoit donc l'image déjà chargée
+plutôt que sa propre copie ; mélanger deux HarfBuzz faisait planter hb_subset (SIGBUS). La
+bibliothèque d'allègement des polices (libharfbuzz-subset) n'est ni embarquée ni chargée :
+WeasyPrint se rabat alors sur fontTools, qu'il embarque déjà.
 """
 import atexit
 import os
@@ -16,10 +23,11 @@ BIBLIOTHEQUES = (
     ("libgobject-2.0.0.dylib", "libgobject-2.0.0.dylib"),
     ("libpango-1.0.dylib", "libpango-1.0.0.dylib"),
     ("libharfbuzz.0.dylib", "libharfbuzz.0.dylib"),
-    ("libharfbuzz-subset.0.dylib", "libharfbuzz-subset.0.dylib"),
     ("libfontconfig.1.dylib", "libfontconfig.1.dylib"),
     ("libpangoft2-1.0.dylib", "libpangoft2-1.0.0.dylib"),
 )
+# Refusée au chargement : WeasyPrint alloue alors les polices avec fontTools (allow_fail=True).
+BIBLIOTHEQUE_IGNOREE = "libharfbuzz-subset.0.dylib"
 CONFIGURATION_POLICES = """<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
 <fontconfig>
@@ -51,6 +59,20 @@ def fichiers_a_embarquer(dossier):
     return trouves
 
 
+def _images_chargees():
+    """Chemins des bibliothèques déjà chargées dans le processus (dyld) ; vide si indisponible."""
+    try:
+        import ctypes
+        systeme = ctypes.CDLL(None)
+        systeme._dyld_image_count.restype = ctypes.c_uint32
+        systeme._dyld_get_image_name.restype = ctypes.c_char_p
+        systeme._dyld_get_image_name.argtypes = [ctypes.c_uint32]
+        noms = (systeme._dyld_get_image_name(i) for i in range(systeme._dyld_image_count()))
+        return [nom.decode("utf-8", "replace") for nom in noms if nom]
+    except (AttributeError, OSError):
+        return []
+
+
 def _ecrire_configuration_polices():
     descripteur, chemin = tempfile.mkstemp(prefix="pas-communs-fonts-", suffix=".conf")
     with os.fdopen(descripteur, "w", encoding="utf-8") as sortie:
@@ -78,8 +100,13 @@ def preparer_pango_embarque():
 
     def dlopen(self, name, flags=0):
         if isinstance(name, str) and "/" not in name:
-            candidat = racine / reels.get(name, name)
-            if candidat.is_file():
+            if name == BIBLIOTHEQUE_IGNOREE:
+                raise OSError(f"{name} ignorée : WeasyPrint alloue les polices avec fontTools.")
+            reel = reels.get(name, name)
+            # Une seule copie par processus : réutiliser l'image qu'un autre composant a déjà chargée.
+            chargee = next((c for c in _images_chargees() if os.path.basename(c) == reel), None) if name in reels else None
+            candidat = Path(chargee) if chargee else racine / reel
+            if chargee or candidat.is_file():
                 return original(self, str(candidat), flags)
         return original(self, name, flags)
 
