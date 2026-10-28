@@ -10,6 +10,7 @@ from contextlib import contextmanager
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -121,6 +122,22 @@ def version_minimale(fichier):
     return max(versions, default=(0,))
 
 
+def chemins_dyld(sortie):
+    """Chemins des bibliothèques chargées, d'après DYLD_PRINT_LIBRARIES (lignes « dyld[pid]: <UUID> /chemin »)."""
+    return [m.group(1).strip() for m in re.finditer(r"dyld\[\d+\]: <[0-9A-Fa-f-]+> (/\S.*)$", sortie, re.M)]
+
+
+def verifier_une_copie_de_harfbuzz(chemins):
+    """Exactement un HarfBuzz et aucun libharfbuzz-subset : le PDF ne mélange pas deux copies."""
+    harfbuzz = sorted({c for c in chemins if os.path.basename(c) == "libharfbuzz.0.dylib"})
+    allegement = sorted({c for c in chemins if os.path.basename(c) == "libharfbuzz-subset.0.dylib"})
+    if len(harfbuzz) != 1:
+        raise Echec(f"{len(harfbuzz)} copies de libharfbuzz chargées : {harfbuzz}")
+    if allegement:
+        raise Echec(f"libharfbuzz-subset chargée, alors qu'elle doit être ignorée : {allegement}")
+    return harfbuzz[0]
+
+
 @contextmanager
 def homebrew_masque():
     """Retire /opt/homebrew le temps d'une sonde : le programme doit se suffire à lui-même."""
@@ -226,6 +243,14 @@ def main():
                                 info["detail"] = "Homebrew masqué pendant la sonde"
                             else:
                                 print(lancer(programme, "--verifier-pdf", env=dict(os.environ)))
+                    if a.avec_pdf and cible == "macos":
+                        with etape("Une seule copie de HarfBuzz chargée dans le processus (informatif)",
+                                   obligatoire=False, strict=a.strict) as info:
+                            sortie = subprocess.run([str(programme), "--verifier-pdf"], capture_output=True, text=True,
+                                timeout=180, env={**os.environ, "DYLD_PRINT_LIBRARIES": "1"})
+                            if sortie.returncode != 0:
+                                raise Echec("La sonde PDF a échoué : " + (sortie.stderr or sortie.stdout)[-300:])
+                            info["detail"] = verifier_une_copie_de_harfbuzz(chemins_dyld(sortie.stdout + sortie.stderr))
                     if a.avec_fenetre:
                         with etape("Fenêtre PyWebView réelle (informatif)", obligatoire=False, strict=a.strict):
                             prefixe = ("xvfb-run", "-a") if cible == "linux" and not os.environ.get("DISPLAY") else ()

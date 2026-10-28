@@ -102,3 +102,21 @@ class QualifierMacOSTests(unittest.TestCase):
             (dossier / "texte.txt").write_text("pas un binaire")
             (dossier / "lien.dylib").symlink_to("lib.dylib")
             self.assertEqual([c.name for c in self.qualifier.binaires_mach_o(dossier)], ["fat.so", "lib.dylib"])
+
+    def test_une_seule_copie_de_harfbuzz_d_apres_dyld(self):
+        pillow = ("dyld[3310]: <05FBCD3C-2519-367D-AF95-03EB8556F75B> /Users/runner/work/p/dist/P.app/Contents/Frameworks/"
+                  "PIL/__dot__dylibs/libharfbuzz.0.dylib\n")
+        racine = ("dyld[3310]: <AA00CD3C-2519-367D-AF95-03EB8556F75B> /Users/runner/work/p/dist/P.app/Contents/Frameworks/"
+                  "libharfbuzz.0.dylib\n")
+        allegement = ("dyld[3310]: <E42886F2-4AAB-3883-95FF-85A3D395943E> /Users/runner/work/p/dist/P.app/Contents/Frameworks/"
+                      "libharfbuzz-subset.0.dylib\n")
+        bruit = "dyld[3310]: <810C8199-1154-38F6-A9C2-6ECEB7E30E1B> /System/Library/PrivateFrameworks/ViewBridge.framework/Versions/A/ViewBridge\nBus error\n"
+        chemins = self.qualifier.chemins_dyld(bruit + pillow + allegement)
+        self.assertEqual(len(chemins), 3)
+        self.assertTrue(chemins[1].endswith("PIL/__dot__dylibs/libharfbuzz.0.dylib"))
+        self.assertEqual(self.qualifier.verifier_une_copie_de_harfbuzz(self.qualifier.chemins_dyld(bruit + racine)),
+            "/Users/runner/work/p/dist/P.app/Contents/Frameworks/libharfbuzz.0.dylib")
+        for sortie, attendu in ((pillow + racine, "2 copies"), (bruit, "0 copies"), (racine + allegement, "libharfbuzz-subset")):
+            with self.subTest(attendu=attendu), self.assertRaises(self.qualifier.Echec) as erreur:
+                self.qualifier.verifier_une_copie_de_harfbuzz(self.qualifier.chemins_dyld(sortie))
+            self.assertIn(attendu, str(erreur.exception))

@@ -71,6 +71,12 @@ def contenu_pdf(octets):
 
 def verifier_pdf():
     import warnings
+    try:
+        # Pillow embarque ses propres dylibs (HarfBuzz, FreeType) : sa présence reproduit Petits Pas.
+        from PIL import Image
+        Image.new("RGB", (1, 1)).tobytes()
+    except ImportError:
+        pass
     from pas_communs import pdf
     recuperer = pdf.recuperateur_medias([], schema="media:", ouvrir=open)
     with warnings.catch_warnings(record=True) as avertissements:
