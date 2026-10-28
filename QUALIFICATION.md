@@ -83,7 +83,7 @@ CI. Le job macOS est non bloquant pour la même raison ; le rendre bloquant
 (`experimental: false`) est une décision séparée. Sous macOS, la sonde PDF
 s'exécute avec `/opt/homebrew` retiré (`--isoler-homebrew`, runner CI jetable
 seulement) : elle exige un PDF avec police embarquée et aucun avertissement
-fontconfig. Deux étapes complètent : « Autonomie » (aucune dépendance de Mach-O hors
+fontconfig. Trois étapes complètent : « Une seule copie de HarfBuzz chargée dans le processus », « Autonomie » (aucune dépendance de Mach-O hors
 du système et du bundle, par `otool -L`) et « Version minimale de macOS exigée par le
 bundle », qui mesure l'exigence réelle des dylibs embarquées. Elles restent
 informatives jusqu'à avoir été vues vertes. Aucune CI ne remplace un essai sur un vrai poste, ni la qualification des produits.

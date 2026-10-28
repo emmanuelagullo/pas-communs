@@ -84,8 +84,9 @@ Aucun réseau n'est nécessaire au fonctionnement autonome après distribution.
 Les dépendances lourdes restent facultatives et propres aux profils utilisateurs.
 Code et documentation : AGPL-3.0-or-later, voir [LICENSE](LICENSE).
 
-Le code prépare **0.10.1**, non publié par ce patch (0.10.0 est publiée et immuable) : alerte de
-démarrage et nom affiché macOS, en plus des programmes macOS arm64 non
+Le code prépare **0.10.2**, non publié par ce patch (0.10.0 et 0.10.1 sont publiées et immuables) : un seul
+HarfBuzz chargé pour le PDF macOS quand un autre paquet embarque le sien, en plus de l'alerte de
+démarrage, du nom affiché et des programmes macOS arm64 non
 signés (identification du système, emplacement des données, bundle `.app` et DMG).
 Voir [LOCAL.md](LOCAL.md). Les consommateurs restent sur leur wheel adopté
 (requirements-communs.txt, 0.9.0 pour l'instant) tant que 0.10.0 n'est pas publié

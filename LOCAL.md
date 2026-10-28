@@ -47,6 +47,16 @@ une archive : ZIP Windows (`NOM-windows.zip`), tar.gz Linux (`NOM-linux.tar.gz`)
 ou image disque macOS (`NOM-macos-arm64.dmg`). Une erreur de vérification
 interdit la création de la nouvelle archive. Construire sur le système cible.
 
+Une seule copie de chaque bibliothèque doit vivre dans le processus (#SOC3g). PyInstaller
+identifie les dylibs par leur nom : si Pillow (ou un autre paquet) embarque un HarfBuzz, un
+FreeType ou un libpng du même nom, Pango y est rattaché, et WeasyPrint, qui chargerait sa propre
+copie par chemin, mélangeait deux HarfBuzz : `hb_subset` plantait en SIGBUS (cas de Petits Pas,
+dont le journal nommait deux `libharfbuzz.0.dylib`). `pango_macos` donne donc à WeasyPrint
+l'image déjà chargée, et refuse `libharfbuzz-subset` : WeasyPrint alloue alors les polices avec
+fontTools, qu'il embarque déjà. L'application minimale embarque Pillow sous macOS pour
+reproduire ce rattachement, et le qualificateur exige exactement un `libharfbuzz.0.dylib`
+chargé (`DYLD_PRINT_LIBRARIES`) et aucun `libharfbuzz-subset`.
+
 ## Erreur de démarrage sous macOS (#SOC3f)
 
 Un `.app` n'a pas de console. `pas_communs.notification.notifier_macos("Produit")` retourne
@@ -91,7 +101,7 @@ le produit doit le dire à ses utilisateurs.
 PDF natif (WeasyPrint/Pango). Un Mac d'utilisateur n'a pas Homebrew et macOS ne
 cherche pas les bibliothèques par nom hors de /usr/lib. Pour l'embarquer, le `.spec`
 passe `pango_variable="NOM_DE_VARIABLE"` à `assembler`, et la variable d'environnement
-désigne, à la construction, le dossier des dylibs (`/opt/homebrew/lib`) : les six
+désigne, à la construction, le dossier des dylibs (`/opt/homebrew/lib`) : les cinq
 bibliothèques que WeasyPrint charge sont copiées dans le bundle, PyInstaller y ajoute
 leurs dépendances et réécrit leurs chemins. Sans variable, aucun PDF natif n'est
 embarqué. Au lancement, `pas_communs.pdf` appelle `pango_macos.preparer_pango_embarque()`

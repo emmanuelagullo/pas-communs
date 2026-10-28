@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pas-communs"
-version = "0.10.1"
+version = "0.10.2"
 description = "Moteur de paquets SQLite et médias pour les applications de la famille Pas"
 readme = "README.md"
 requires-python = ">=3.10"

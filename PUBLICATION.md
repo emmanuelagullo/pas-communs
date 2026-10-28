@@ -119,3 +119,11 @@ Ce patch prépare une nouvelle version ; il ne publie rien. 0.10.0 reste immuabl
 qualification (CI du socle et application minimale), publier le tag 0.10.1 sur les deux forges
 et promouvoir le wheel exact vérifié. Les produits gardent leur wheel adopté jusqu'à leur propre
 adoption explicite.
+
+## Candidat 0.10.2 — une seule copie de HarfBuzz pour le PDF macOS
+
+Ce patch prépare une nouvelle version ; il ne publie rien. 0.10.0 et 0.10.1 restent immuables.
+Il corrige un plantage (SIGBUS dans hb_subset) des programmes macOS qui embarquent aussi Pillow.
+Après qualification (CI du socle, dont l'application minimale avec Pillow sous macOS), publier le
+tag 0.10.2 sur les deux forges et promouvoir le wheel exact vérifié. Les produits gardent leur
+wheel adopté jusqu'à leur propre adoption explicite.

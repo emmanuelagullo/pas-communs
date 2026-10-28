@@ -127,6 +127,9 @@ inventer de bundle_identifiant par défaut ni ajouter Intel, universal2 ou
 Windows ARM64 sans besoin explicite. Le PDF natif macOS n'existe que si le produit
 passe pango_variable à assembler ; ne l'annoncer qu'après une sonde verte sans Homebrew
 (--isoler-homebrew) et en indiquant la version minimale de macOS mesurée. Les noms historiques des archives Windows et Linux sont inchangés.
+Le PDF natif macOS charge une seule copie de chaque bibliothèque (pango_macos) : ne pas rétablir
+le chargement de libharfbuzz-subset ni de copies propres à WeasyPrint sans une sonde qui reproduit
+un paquet embarquant sa propre copie (Pillow).
 Une erreur de démarrage macOS passe par pas_communs.notification : ne pas l'avaler, ne pas
 construire de commande shell avec un message.
 Le message de moteur absent (pas_communs.moteur) et le shortcode aide-installation
