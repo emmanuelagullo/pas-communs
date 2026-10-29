@@ -27,6 +27,14 @@ class ThemeHugoTests(unittest.TestCase):
                     "--sortie", sortie, "--base-url", base], capture_output=True, text=True)
                 self.assertEqual(verification.returncode, 0, verification.stdout + verification.stderr)
 
+    def test_cellules_de_tableau_sans_coupure_au_milieu_des_mots(self):
+        """overflow-wrap: anywhere sur .prose réduit les colonnes à une lettre : les cellules repassent à break-word."""
+        css = (RACINE / "hugo/pas/static/css/site.css").read_text(encoding="utf-8")
+        regle = ".prose th, .prose td { overflow-wrap: break-word; }"
+        self.assertIn(regle, css)
+        self.assertIn("overflow-wrap: anywhere", css)
+        self.assertLess(css.index("overflow-wrap: anywhere"), css.index(regle))
+
     def test_aide_installation_ordre_et_contenu(self):
         with tempfile.TemporaryDirectory() as sortie:
             self.assertEqual(self.construire(sortie, "https://example.invalid/produit/").returncode, 0)

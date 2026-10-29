@@ -148,6 +148,9 @@ h2 { font-family: Georgia, serif; }
 /* Textes longs et navigation accessibles sur les petits écrans. */
 .shell, .hero > *, .footer-grid > * { min-width: 0; }
 .prose, .demo-access span, .footer-grid { overflow-wrap: anywhere; }
+/* « anywhere » ramène la largeur minimale d'une colonne à une lettre : les en-têtes de tableau
+   (« Version », « Nouveautés ») étaient coupés au milieu du mot. break-word ne réduit pas cette largeur. */
+.prose th, .prose td { overflow-wrap: break-word; }
 .demo-access span { white-space: normal; }
 nav a { min-height: 24px; padding-block: 4px; }
 .footer-grid > * { flex: 1; }
