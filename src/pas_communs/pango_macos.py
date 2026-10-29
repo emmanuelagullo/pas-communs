@@ -15,6 +15,7 @@ WeasyPrint se rabat alors sur fontTools, qu'il embarque déjà.
 import atexit
 import os
 from pathlib import Path
+import posixpath
 import sys
 import tempfile
 
@@ -61,6 +62,8 @@ def fichiers_a_embarquer(dossier):
 
 def _images_chargees():
     """Chemins des bibliothèques déjà chargées dans le processus (dyld) ; vide si indisponible."""
+    if sys.platform != "darwin":
+        return []
     try:
         import ctypes
         systeme = ctypes.CDLL(None)
@@ -69,7 +72,7 @@ def _images_chargees():
         systeme._dyld_get_image_name.argtypes = [ctypes.c_uint32]
         noms = (systeme._dyld_get_image_name(i) for i in range(systeme._dyld_image_count()))
         return [nom.decode("utf-8", "replace") for nom in noms if nom]
-    except (AttributeError, OSError):
+    except Exception:  # noqa: BLE001 : ne jamais empêcher le chargement des bibliothèques
         return []
 
 
@@ -104,9 +107,12 @@ def preparer_pango_embarque():
                 raise OSError(f"{name} ignorée : WeasyPrint alloue les polices avec fontTools.")
             reel = reels.get(name, name)
             # Une seule copie par processus : réutiliser l'image qu'un autre composant a déjà chargée.
-            chargee = next((c for c in _images_chargees() if os.path.basename(c) == reel), None) if name in reels else None
-            candidat = Path(chargee) if chargee else racine / reel
-            if chargee or candidat.is_file():
+            # Les chemins de dyld sont toujours POSIX, quel que soit le système qui exécute les essais.
+            chargee = next((c for c in _images_chargees() if posixpath.basename(c) == reel), None) if name in reels else None
+            if chargee:
+                return original(self, chargee, flags)
+            candidat = racine / reel
+            if candidat.is_file():
                 return original(self, str(candidat), flags)
         return original(self, name, flags)
 

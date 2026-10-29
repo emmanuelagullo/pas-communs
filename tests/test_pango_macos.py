@@ -27,8 +27,13 @@ class FichiersAEmbarquerTests(unittest.TestCase):
         self.assertEqual(len(pango_macos.BIBLIOTHEQUES), 5)
 
     def test_images_chargees_ne_plante_pas_hors_de_macos(self):
-        images = pango_macos._images_chargees()
-        self.assertIsInstance(images, list)
+        self.assertIsInstance(pango_macos._images_chargees(), list)
+
+    def test_images_chargees_tolere_une_erreur_de_ctypes_comme_sous_windows(self):
+        """ctypes.CDLL(None) lève TypeError sous Windows : jamais d'exception vers WeasyPrint."""
+        import ctypes
+        with patch.object(pango_macos.sys, "platform", "darwin"), patch.object(ctypes, "CDLL", side_effect=TypeError("None")):
+            self.assertEqual(pango_macos._images_chargees(), [])
 
     def test_liens_resolus_vers_les_fichiers_reels(self):
         with tempfile.TemporaryDirectory() as t:
@@ -58,6 +63,10 @@ class PreparationAuLancementTests(unittest.TestCase):
         self.addCleanup(setattr, cffi.FFI, "dlopen", original)
         self.addCleanup(setattr, pango_macos, "_pret", False)
         cffi.FFI.dlopen = lambda ffi, name, flags=0: self.appels.append((name, flags)) or "bibliotheque"
+        # Par défaut aucune image déjà chargée : les essais ne dépendent pas de ctypes ni du système.
+        stub = patch.object(pango_macos, "_images_chargees", return_value=[])
+        stub.start()
+        self.addCleanup(stub.stop)
 
     def gele_sous_macos(self, avec_pango=True):
         if avec_pango:
